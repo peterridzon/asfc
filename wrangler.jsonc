@@ -4,6 +4,10 @@
   "compatibility_date": "2026-08-24",
   "main": "./worker/index.ts",
 
+  // Keeps the *.workers.dev address alive next to the custom domain, so there
+  // is always a working URL even while a certificate is being issued.
+  "workers_dev": true,
+
   // The built site. `single-page-application` makes deep links such as
   // /outlook work on a hard refresh; `run_worker_first` keeps the Worker out
   // of the way of everything that is not the API.
@@ -12,6 +16,13 @@
     "not_found_handling": "single-page-application",
     "run_worker_first": ["/api/*"]
   },
+
+  // The live domain. Cloudflare creates the DNS records for these when the
+  // Worker is deployed, so the zone needs no records of its own.
+  "routes": [
+    { "pattern": "asfc.live", "custom_domain": true },
+    { "pattern": "www.asfc.live", "custom_domain": true }
+  ],
 
   // Published images and their text. This id is not a secret — reading or
   // writing the namespace still requires Cloudflare account credentials.
