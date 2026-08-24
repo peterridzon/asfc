@@ -1,0 +1,3 @@
+# Cloudflare Pages single-page-app fallback.
+# Without this, opening /outlook directly (or refreshing on it) would 404.
+/*    /index.html   200

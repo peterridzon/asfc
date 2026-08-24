@@ -1,0 +1,55 @@
+@import 'tailwindcss';
+
+@theme {
+  /* ASFC palette — light blue canvas, white panels, dark navy type. */
+  --color-sky-canvas: #d7ebf9;
+  --color-sky-canvas-deep: #bfdcf1;
+  --color-navy: #0b2b4a;
+  --color-navy-soft: #2b5d88;
+  --color-navy-faint: #6d94b4;
+  --color-hairline: #a9cbe4;
+  --color-panel: #ffffff;
+
+  --color-asfc-green: #12813f;
+  --color-asfc-green-dark: #0f6c35;
+  --color-asfc-yellow: #e0af10;
+  --color-asfc-yellow-dark: #c1950a;
+  --color-asfc-red: #c31f1f;
+  --color-asfc-red-dark: #a51919;
+
+  --font-mono:
+    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-sky-canvas text-navy antialiased;
+    font-family:
+      system-ui,
+      -apple-system,
+      'Segoe UI',
+      Roboto,
+      'Helvetica Neue',
+      Arial,
+      sans-serif;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-navy;
+  }
+}
+
+@layer components {
+  .label-tech {
+    @apply font-mono text-[11px] tracking-[0.14em] text-navy-soft uppercase;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
