@@ -13,13 +13,12 @@
     "run_worker_first": ["/api/*"]
   },
 
-  // Published images and their text.
-  // Create the namespace once, then paste its id here:
-  //   npx wrangler kv namespace create ASFC_KV
+  // Published images and their text. This id is not a secret — reading or
+  // writing the namespace still requires Cloudflare account credentials.
   "kv_namespaces": [
     {
       "binding": "ASFC_KV",
-      "id": "PASTE_YOUR_KV_NAMESPACE_ID_HERE"
+      "id": "276e5ab0c4ee4b19ad788844c5c30358"
     }
   ]
 }
