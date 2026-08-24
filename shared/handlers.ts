@@ -165,3 +165,32 @@ export async function handleGetImage(env: CmsEnv, rawId: string): Promise<Respon
     },
   })
 }
+
+/* --------------------------------------------------------------- router --- */
+
+/**
+ * Maps a request path (already stripped of the `/api` prefix) onto a handler.
+ * Shared by the deployed Worker and the local dev server so both behave
+ * identically.
+ */
+export async function routeCmsRequest(
+  request: Request,
+  env: CmsEnv,
+  path: string,
+): Promise<Response> {
+  const method = request.method
+
+  if (path === '/session' && method === 'GET') return handleSession(request, env)
+  if (path === '/login' && method === 'POST') return handleLogin(request, env)
+  if (path === '/logout' && method === 'POST') return handleLogout()
+  if (path === '/posts' && method === 'GET') return handleListPosts(env)
+  if (path === '/posts' && method === 'POST') return handleCreatePost(request, env)
+  if (path.startsWith('/posts/') && method === 'DELETE') {
+    return handleDeletePost(request, env, decodeURIComponent(path.slice('/posts/'.length)))
+  }
+  if (path.startsWith('/images/') && method === 'GET') {
+    return handleGetImage(env, decodeURIComponent(path.slice('/images/'.length)))
+  }
+
+  return new Response('Not found', { status: 404 })
+}

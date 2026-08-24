@@ -126,71 +126,73 @@ dev password is `admin` unless you set `ADMIN_PASSWORD` in a `.env` file.
 
 ---
 
-## Deploying to Cloudflare Pages
+## Deploying to Cloudflare
+
+The site runs as a Cloudflare **Worker** with static assets: the built files in
+`dist/` are served straight from Cloudflare's asset store, and `worker/index.ts`
+handles `/api/*` only.
 
 You have to run these yourself — they need your Cloudflare login.
 
-**1. Put the code in a Git repository** and push it to GitHub.
+**1. Create the storage for the images**
 
-**2. Create the Pages project**
+```bash
+npx wrangler kv namespace create ASFC_KV
+```
 
-In the Cloudflare dashboard: **Workers & Pages → Create → Pages → Connect to Git**,
-pick the repository, then:
+Copy the id it prints into `wrangler.jsonc`, replacing
+`PASTE_YOUR_KV_NAMESPACE_ID_HERE`, then commit and push.
 
-- **Framework preset:** Vite
+You can also create it in the dashboard under **Storage & Databases → KV**; the
+id is shown next to the namespace.
+
+**2. Connect the repository**
+
+In the Cloudflare dashboard: **Workers & Pages → Create → Import a repository**,
+pick the repo, then:
+
 - **Build command:** `npm run build`
-- **Build output directory:** `dist`
+- **Deploy command:** `npx wrangler deploy`
 
-**3. Create the storage for the images**
+Every push to `main` then redeploys automatically.
 
-In the dashboard: **Storage & Databases → KV → Create a namespace**, name it
-`asfc`. Then go back to your Pages project → **Settings → Bindings → Add →
-KV namespace**:
+**3. Set the two secrets**
 
-- **Variable name:** `ASFC_KV`  (exactly this — the code looks for it)
-- **KV namespace:** the one you just created
+`ADMIN_PASSWORD` is the password you type at `/admin`. `AUTH_SECRET` signs the
+login cookie — make it a long random string and never reuse your password for it.
 
-**4. Set the two secrets**
+```bash
+npx wrangler secret put ADMIN_PASSWORD
+```
 
-`ADMIN_PASSWORD` is the password you will type at `/admin`. `AUTH_SECRET` signs
-the login cookie — make it a long random string and never reuse your password
-for it.
+```bash
+npx wrangler secret put AUTH_SECRET
+```
 
-In the dashboard: **Settings → Variables and Secrets → Add**, and choose the
-**Secret** type for both so they stay encrypted.
+Or in the dashboard: **your Worker → Settings → Variables and Secrets → Add**,
+type **Secret** for both.
 
-**5. Connect your domain**
+**4. Connect your domain**
 
-**Custom domains → Set up a custom domain**. Because the domain is already in
-your Cloudflare account, the DNS record is created for you.
-
-**6. Redeploy once** (Deployments → ⋯ → Retry deployment) so the new bindings
-take effect, then open `https://your-domain/admin`.
-
-Bindings and secrets are deliberately configured in the dashboard rather than in
-a `wrangler.toml`: as soon as that file exists it becomes the source of truth and
-the dashboard fields turn read-only, which makes them awkward to change later.
+**Settings → Domains & Routes → Add → Custom domain**. The DNS record is created
+for you, provided the domain is already active in the same Cloudflare account.
 
 ### Checking it worked
 
 `/admin` tells you if something is missing: if it says publishing is not set up,
 the KV binding or one of the secrets is absent.
 
-`public/_redirects` already contains the single-page-app fallback, so deep links
-like `/outlook` survive a hard refresh. `public/_headers` sets cache lifetimes
-and basic security headers.
-
----
+Deep links such as `/outlook` survive a hard refresh because
+`not_found_handling` is set to `single-page-application` in `wrangler.jsonc`.
 
 ## Project layout
 
 ```
-functions/api/            the Cloudflare Pages Functions behind /api/*
-shared/                   CMS logic shared by the Functions and local dev
+worker/index.ts           the Worker behind /api/*
+wrangler.jsonc            Worker config: assets, routing and the KV binding
+shared/                   CMS logic shared by the Worker and local dev
 vite-plugins/             local stand-in for KV so npm run dev behaves the same
 public/images/logos/      the provider logos (placeholders for now)
-public/_headers           cache and security headers for Cloudflare Pages
-public/_redirects         SPA fallback for Cloudflare Pages
 src/pages/Admin.tsx       the publishing page
 src/content/providers.ts  the three data providers
 src/content/updateLog.ts  the update log
@@ -202,5 +204,5 @@ Published images and their text live in Cloudflare KV, not in the repository.
 
 ## Tech
 
-React 19 · TypeScript · Vite · Tailwind CSS 4 · React Router · Cloudflare Pages
-Functions + KV. No third-party services.
+React 19 · TypeScript · Vite · Tailwind CSS 4 · React Router · Cloudflare Workers
++ KV. No third-party services.

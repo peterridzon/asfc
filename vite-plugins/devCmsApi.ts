@@ -2,15 +2,7 @@ import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import type { Connect, Plugin } from 'vite'
 import type { CmsEnv, KvNamespace } from '../shared/cms.ts'
-import {
-  handleCreatePost,
-  handleDeletePost,
-  handleGetImage,
-  handleListPosts,
-  handleLogin,
-  handleLogout,
-  handleSession,
-} from '../shared/handlers.ts'
+import { routeCmsRequest } from '../shared/handlers.ts'
 
 /**
  * Local stand-in for Cloudflare KV, backed by a folder that is git-ignored.
@@ -94,29 +86,9 @@ export function devCmsApi(env: Record<string, string | undefined>): Plugin {
       server.middlewares.use('/api', async (message, res) => {
         const origin = `http://${message.headers.host ?? 'localhost'}`
         const request = await toRequest(message, origin)
-        const url = new URL(request.url)
-        // `message.url` is already stripped of the /api prefix by Connect.
-        const path = url.pathname.replace(/^\/api/, '') || '/'
-        const method = request.method
-
-        let response: Response
-        if (path === '/session' && method === 'GET') {
-          response = await handleSession(request, cms)
-        } else if (path === '/login' && method === 'POST') {
-          response = await handleLogin(request, cms)
-        } else if (path === '/logout' && method === 'POST') {
-          response = handleLogout()
-        } else if (path === '/posts' && method === 'GET') {
-          response = await handleListPosts(cms)
-        } else if (path === '/posts' && method === 'POST') {
-          response = await handleCreatePost(request, cms)
-        } else if (path.startsWith('/posts/') && method === 'DELETE') {
-          response = await handleDeletePost(request, cms, decodeURIComponent(path.slice(7)))
-        } else if (path.startsWith('/images/') && method === 'GET') {
-          response = await handleGetImage(cms, decodeURIComponent(path.slice(8)))
-        } else {
-          response = new Response('Not found', { status: 404 })
-        }
+        // Connect has already stripped the /api prefix from `message.url`.
+        const path = new URL(request.url).pathname.replace(/^\/api/, '') || '/'
+        const response = await routeCmsRequest(request, cms, path)
 
         res.statusCode = response.status
         response.headers.forEach((value, key) => res.setHeader(key, value))

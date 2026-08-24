@@ -1,0 +1,25 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "asfc",
+  "compatibility_date": "2026-08-24",
+  "main": "./worker/index.ts",
+
+  // The built site. `single-page-application` makes deep links such as
+  // /outlook work on a hard refresh; `run_worker_first` keeps the Worker out
+  // of the way of everything that is not the API.
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+
+  // Published images and their text.
+  // Create the namespace once, then paste its id here:
+  //   npx wrangler kv namespace create ASFC_KV
+  "kv_namespaces": [
+    {
+      "binding": "ASFC_KV",
+      "id": "PASTE_YOUR_KV_NAMESPACE_ID_HERE"
+    }
+  ]
+}

@@ -16,5 +16,5 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true
   },
-  "include": ["vite.config.ts", "vite-plugins/**/*.ts", "shared/**/*.ts", "functions/**/*.ts"]
+  "include": ["vite.config.ts", "vite-plugins/**/*.ts", "shared/**/*.ts", "worker/**/*.ts"]
 }
