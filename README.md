@@ -143,13 +143,12 @@ pick the repository, then:
 
 **3. Create the storage for the images**
 
-```bash
-npx wrangler kv namespace create ASFC_KV
-```
+In the dashboard: **Storage & Databases → KV → Create a namespace**, name it
+`asfc`. Then go back to your Pages project → **Settings → Bindings → Add →
+KV namespace**:
 
-Copy the id it prints into `wrangler.toml`, replacing
-`PASTE_YOUR_KV_NAMESPACE_ID_HERE`. (You can also add the binding by hand in
-**Settings → Bindings → KV namespace**, with the variable name `ASFC_KV`.)
+- **Variable name:** `ASFC_KV`  (exactly this — the code looks for it)
+- **KV namespace:** the one you just created
 
 **4. Set the two secrets**
 
@@ -157,24 +156,20 @@ Copy the id it prints into `wrangler.toml`, replacing
 the login cookie — make it a long random string and never reuse your password
 for it.
 
-```bash
-npx wrangler pages secret put ADMIN_PASSWORD
-```
-
-```bash
-npx wrangler pages secret put AUTH_SECRET
-```
-
-Or in the dashboard: **Settings → Environment variables → Add**, and tick
-**Encrypt** for both.
+In the dashboard: **Settings → Variables and Secrets → Add**, and choose the
+**Secret** type for both so they stay encrypted.
 
 **5. Connect your domain**
 
 **Custom domains → Set up a custom domain**. Because the domain is already in
 your Cloudflare account, the DNS record is created for you.
 
-**6. Redeploy once** so the new bindings take effect, then open
-`https://your-domain/admin`.
+**6. Redeploy once** (Deployments → ⋯ → Retry deployment) so the new bindings
+take effect, then open `https://your-domain/admin`.
+
+Bindings and secrets are deliberately configured in the dashboard rather than in
+a `wrangler.toml`: as soon as that file exists it becomes the source of truth and
+the dashboard fields turn read-only, which makes them awkward to change later.
 
 ### Checking it worked
 
@@ -201,7 +196,6 @@ src/content/providers.ts  the three data providers
 src/content/updateLog.ts  the update log
 src/lib/sections.ts       button labels, colours and VERSION_LABEL
 src/components/           header, footer, full-screen image list, disclaimer
-wrangler.toml             Pages config and the KV binding
 ```
 
 Published images and their text live in Cloudflare KV, not in the repository.
