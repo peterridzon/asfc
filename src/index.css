@@ -1,5 +1,13 @@
 @import 'tailwindcss';
 
+/*
+ * Only tall viewports get the absolutely centred button block. On anything
+ * shorter — a short window, browser zoom, or an enlarged default font size —
+ * the layout falls back to normal flow so the buttons can never land on top
+ * of the heading.
+ */
+@custom-variant tall (@media (min-height: 900px));
+
 @theme {
   /* ASFC palette — light blue canvas, white panels, dark navy type. */
   --color-sky-canvas: #d7ebf9;

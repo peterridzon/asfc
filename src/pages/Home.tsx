@@ -7,11 +7,7 @@ import type { SectionId } from '../types'
 /**
  * The three coloured buttons form an L: green above yellow, red to the right of
  * yellow. The empty top-right quadrant means the point where all three meet is
- * the middle of the 2x2 block — and the grid is offset so that meeting point
- * lands exactly on the centre of the viewport.
- *
- * The white button sits underneath, spanning the full width of the yellow and
- * red buttons, and is half as tall as the green one.
+ * the middle of the 2x2 block. The white update-log button sits underneath.
  */
 const CELL: Record<SectionId, string> = {
   sources: 'col-start-1 row-start-1',
@@ -21,13 +17,17 @@ const CELL: Record<SectionId, string> = {
 
 /**
  * The homepage is deliberately bare: light blue background, the heading text
- * and the buttons centred on the screen. No header, no footer.
+ * and the buttons. No header, no footer.
+ *
+ * On a tall viewport the block is positioned so the three-way corner lands
+ * exactly on the centre of the page. On shorter ones it simply sits below the
+ * heading and the page scrolls — see the `tall` variant in index.css.
  */
 export function Home() {
   useDocumentMeta('ASFC', `ASFC — Amateur Storm Forecast Center. ${DISCLAIMER}`)
 
   return (
-    <div className="relative min-h-dvh bg-sky-canvas px-4 py-8 sm:px-6 sm:py-12">
+    <div className="relative flex min-h-dvh flex-col bg-sky-canvas px-4 py-8 sm:px-6 sm:py-12">
       <p className="absolute top-3 left-4 font-mono text-xs text-black sm:top-4 sm:left-6 sm:text-sm">
         {VERSION_LABEL}
       </p>
@@ -46,15 +46,15 @@ export function Home() {
       </header>
 
       {/*
-        --asfc-row is the height of a coloured button; the gap is 0.75rem, so
-        shifting the grid up by one row plus half a gap puts the three-way
-        corner on the viewport centre, whatever is added below it.
+        --asfc-row is the height of a coloured button. On tall screens the block
+        is shifted up by one row plus half a gap, which puts the three-way
+        corner on the viewport centre whatever sits below it.
       */}
       <nav
         aria-label="Sections"
-        className="absolute top-1/2 left-1/2 w-full max-w-[38rem] -translate-x-1/2 -translate-y-[calc(var(--asfc-row)+0.375rem)] px-4 [--asfc-row:6rem] sm:[--asfc-row:7rem]"
+        className="mt-8 flex flex-1 items-center [--asfc-row:6rem] sm:[--asfc-row:7rem] tall:absolute tall:top-1/2 tall:left-1/2 tall:mt-0 tall:block tall:w-full tall:-translate-x-1/2 tall:-translate-y-[calc(var(--asfc-row)+0.375rem)] tall:px-4"
       >
-        <ul className="grid grid-cols-2 gap-3">
+        <ul className="mx-auto grid w-[min(38rem,92vw)] grid-cols-2 gap-3">
           {SECTIONS.map((section) => (
             <li key={section.id} className={CELL[section.id]}>
               <Link
