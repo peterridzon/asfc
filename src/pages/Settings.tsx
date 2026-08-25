@@ -1,10 +1,14 @@
 import { useState } from 'react'
+import { CountryDialog } from '../components/CountryDialog'
+import { ResetSettingsDialog } from '../components/ResetSettingsDialog'
 import {
   alertPopupsEnabled,
   clearDismissedAlerts,
   dismissedAlertIds,
   setAlertPopupsEnabled,
 } from '../lib/alertSettings'
+import { clearPreferredCountry, preferredCountry, type CountrySlug } from '../lib/countryPreference'
+import { OUTLOOK_REGIONS } from '../lib/sections'
 import { useDocumentMeta } from '../lib/useDocumentMeta'
 
 const button =
@@ -17,6 +21,11 @@ export function Settings() {
   const [alertsOpen, setAlertsOpen] = useState(false)
   const [popups, setPopups] = useState(alertPopupsEnabled)
   const [dismissedCount, setDismissedCount] = useState(() => dismissedAlertIds().length)
+  const [countryOpen, setCountryOpen] = useState(false)
+  const [resetOpen, setResetOpen] = useState(false)
+  const [country, setCountry] = useState<CountrySlug | null>(preferredCountry)
+
+  const countryName = OUTLOOK_REGIONS.find((region) => region.slug === country)?.country
 
   const togglePopups = () => {
     const next = !popups
@@ -87,7 +96,43 @@ export function Settings() {
             )}
           </div>
         )}
+
+        <button
+          type="button"
+          onClick={() => setCountryOpen(true)}
+          className={button}
+        >
+          Select your country
+        </button>
+
+        {country && (
+          <div className="flex flex-wrap items-center gap-3 border-l-2 border-hairline pl-4">
+            <p className="text-sm text-navy-soft">
+              Storm Outlook opens <span className="font-semibold text-navy">{countryName}</span>{' '}
+              straight away.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                clearPreferredCountry()
+                setCountry(null)
+              }}
+              className="border border-hairline px-4 py-2 font-mono text-xs tracking-[0.1em] text-navy-soft uppercase transition hover:bg-sky-canvas hover:text-navy"
+            >
+              Clear
+            </button>
+          </div>
+        )}
+
+        <button type="button" onClick={() => setResetOpen(true)} className={button}>
+          Reset settings
+        </button>
       </div>
+
+      {countryOpen && (
+        <CountryDialog onClose={() => setCountryOpen(false)} onChosen={setCountry} />
+      )}
+      {resetOpen && <ResetSettingsDialog onClose={() => setResetOpen(false)} />}
     </div>
   )
 }

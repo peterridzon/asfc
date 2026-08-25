@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { SECTIONS } from '../lib/sections'
+import { useOutlookPath } from '../lib/useOutlookPath'
 
 /** Shown on every page except the homepage. */
 export function Header() {
   const location = useLocation()
+  const outlook = useOutlookPath()
   // Remembering which route the menu was opened on closes it on navigation.
   const [openedOn, setOpenedOn] = useState<string | null>(null)
   const open = openedOn === location.pathname
@@ -26,7 +28,11 @@ export function Header() {
 
         <nav className="hidden items-center gap-1 md:flex" aria-label="Main navigation">
           {SECTIONS.map((section) => (
-            <NavLink key={section.id} to={section.path} className={linkClass}>
+            <NavLink
+              key={section.id}
+              to={section.id === 'outlook' ? outlook : section.path}
+              className={linkClass}
+            >
               {section.label}
             </NavLink>
           ))}
@@ -53,7 +59,7 @@ export function Header() {
             {SECTIONS.map((section) => (
               <li key={section.id}>
                 <NavLink
-                  to={section.path}
+                  to={section.id === 'outlook' ? outlook : section.path}
                   className={({ isActive }) => `${linkClass({ isActive })} block`}
                 >
                   {section.label}

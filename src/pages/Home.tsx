@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Logo } from '../components/Logo'
+import { useOutlookPath } from '../lib/useOutlookPath'
 import { DISCLAIMER, SECTIONS, VERSION_LABEL } from '../lib/sections'
 import { useDocumentMeta } from '../lib/useDocumentMeta'
 import type { SectionId } from '../types'
@@ -31,6 +32,7 @@ const CELL: Record<SectionId, string> = {
  */
 export function Home() {
   useDocumentMeta('ASFC', `ASFC — Amateur Storm Forecast Center. ${DISCLAIMER}`)
+  const outlook = useOutlookPath()
 
   return (
     <div className="relative flex min-h-dvh flex-col bg-sky-canvas px-4 py-8 sm:px-6 sm:py-12">
@@ -64,7 +66,8 @@ export function Home() {
           {SECTIONS.map((section) => (
             <li key={section.id} className={CELL[section.id]}>
               <Link
-                to={section.path}
+                // Storm Outlook skips the chooser once a country is picked.
+                to={section.id === 'outlook' ? outlook : section.path}
                 className={`flex h-[var(--asfc-row)] items-center justify-center px-3 text-center font-mono text-sm leading-tight font-bold tracking-[0.06em] shadow-sm transition sm:text-base sm:tracking-[0.1em] md:text-lg ${section.button}`}
               >
                 {section.label}
