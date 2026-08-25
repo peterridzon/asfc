@@ -1,32 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
-
-const STORAGE_KEY = 'asfc.disclaimerHidden'
-const SESSION_KEY = 'asfc.disclaimerAcknowledged'
+import {
+  acknowledgeDisclaimer,
+  disclaimerHandled,
+  hideDisclaimerForever,
+} from '../lib/disclaimer'
 
 const DISCLAIMER_TEXT =
   "Disclaimer: This website is for experimental purposes only! warnings, alerts and storm outlooks are not official and they don't replace official warnings, so if a warning is issued, double-check it on official warning platforms!"
-
-function alreadyHandled(): boolean {
-  try {
-    // "Don't show this again" is permanent; "Got it!" lasts until the tab is
-    // closed, so navigating deeper into a section does not ask twice.
-    return (
-      localStorage.getItem(STORAGE_KEY) === 'true' ||
-      sessionStorage.getItem(SESSION_KEY) === 'true'
-    )
-  } catch {
-    // Private mode or blocked storage — just show the dialog.
-    return false
-  }
-}
-
-function rememberForSession(): void {
-  try {
-    sessionStorage.setItem(SESSION_KEY, 'true')
-  } catch {
-    // Nothing to do — the dialog will simply appear again.
-  }
-}
 
 /**
  * Shown every time the Storm Outlook or Alerts page is opened.
@@ -38,7 +18,7 @@ function rememberForSession(): void {
  * of the height, because 0.707 x 0.707 = 0.5.
  */
 export function DisclaimerDialog() {
-  const [open, setOpen] = useState(() => !alreadyHandled())
+  const [open, setOpen] = useState(() => !disclaimerHandled())
   const confirmRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
@@ -48,7 +28,7 @@ export function DisclaimerDialog() {
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        rememberForSession()
+        acknowledgeDisclaimer()
         setOpen(false)
       }
     }
@@ -66,11 +46,7 @@ export function DisclaimerDialog() {
   if (!open) return null
 
   const neverAgain = () => {
-    try {
-      localStorage.setItem(STORAGE_KEY, 'true')
-    } catch {
-      // Nothing to do — the choice simply will not persist.
-    }
+    hideDisclaimerForever()
     setOpen(false)
   }
 
@@ -95,7 +71,7 @@ export function DisclaimerDialog() {
             ref={confirmRef}
             type="button"
             onClick={() => {
-              rememberForSession()
+              acknowledgeDisclaimer()
               setOpen(false)
             }}
             className="w-full bg-navy px-6 py-5 font-mono text-xl font-bold tracking-[0.12em] text-white uppercase transition hover:bg-navy-soft sm:text-2xl"

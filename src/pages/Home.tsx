@@ -5,9 +5,9 @@ import { useDocumentMeta } from '../lib/useDocumentMeta'
 import type { SectionId } from '../types'
 
 /**
- * The three coloured buttons form an L: green above yellow, red to the right of
- * yellow. The empty top-right quadrant means the point where all three meet is
- * the middle of the 2x2 block. The white update-log button sits underneath.
+ * The 2x2 block: green above yellow, red to the right of yellow, and grey
+ * settings above red. The point where all four meet is the middle of the
+ * block. The white update-log button sits underneath.
  */
 const CELL: Record<SectionId, string> = {
   sources: 'col-start-1 row-start-1',
@@ -65,6 +65,15 @@ export function Home() {
               </Link>
             </li>
           ))}
+
+          <li className="col-start-2 row-start-1">
+            <Link
+              to="/settings"
+              className="flex h-[var(--asfc-row)] items-center justify-center bg-[rgb(170,178,188)] px-3 text-center font-mono text-sm leading-tight font-bold tracking-[0.06em] text-navy shadow-sm transition hover:bg-[rgb(150,159,170)] sm:text-base sm:tracking-[0.1em] md:text-lg"
+            >
+              SETTINGS
+            </Link>
+          </li>
 
           <li className="col-span-2 row-start-3">
             <Link
