@@ -1,7 +1,7 @@
 {
   "name": "asfc",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -27,5 +27,5 @@
     "vite": "^8.2.2",
     "wrangler": "^4.125.0"
   },
-  "description": "ASFC — Amateur Storm Forecast Center: a small site for publishing weather images."
+  "description": "ASFC \u2014 Amateur Storm Forecast Center: a small site for publishing weather images."
 }
