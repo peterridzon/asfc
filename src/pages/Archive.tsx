@@ -6,20 +6,15 @@ import { usePosts } from '../lib/usePosts'
 import { useDocumentMeta } from '../lib/useDocumentMeta'
 import { NotFound } from './NotFound'
 
-/**
- * The current outlook for one country — only the newest one. Everything older
- * moves to /archive/<country>.
- */
-export function Outlook() {
+/** Every outlook for one country except the current one. */
+export function Archive() {
   const { region: slug = '' } = useParams()
   const region = getOutlookRegion(slug)
 
-  // Set here rather than in <NotFound />: child effects run first, so this
-  // component would otherwise overwrite the 404 title.
   useDocumentMeta(
-    region ? region.title : 'Page not found',
+    region ? `${region.country} outlook archive` : 'Page not found',
     region
-      ? `The current experimental ASFC storm outlook for ${region.country}.`
+      ? `Previously published ASFC storm outlooks for ${region.country}.`
       : 'This ASFC page does not exist.',
   )
 
@@ -31,10 +26,11 @@ export function Outlook() {
     <>
       <DisclaimerDialog />
       <FullScreenImages
-        posts={posts.slice(0, 1)}
+        // The first entry is the current outlook and lives on /outlook.
+        posts={posts.slice(1)}
         loading={loading}
         error={error}
-        emptyHint={`No outlook published for ${region.country} yet.`}
+        emptyHint={`No older outlooks for ${region.country} yet.`}
       />
     </>
   )

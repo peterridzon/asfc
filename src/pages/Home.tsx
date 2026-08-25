@@ -4,6 +4,12 @@ import { DISCLAIMER, SECTIONS, VERSION_LABEL } from '../lib/sections'
 import { useDocumentMeta } from '../lib/useDocumentMeta'
 import type { SectionId } from '../types'
 
+/** Full-width buttons under the 2x2 block, in the order they appear. */
+const WIDE_BUTTONS = [
+  { to: '/update-log', label: 'UPDATE LOG' },
+  { to: '/archive', label: 'OUTLOOK ARCHIVE' },
+]
+
 /**
  * The 2x2 block: green above yellow, red to the right of yellow, and grey
  * settings above red. The point where all four meet is the middle of the
@@ -75,14 +81,16 @@ export function Home() {
             </Link>
           </li>
 
-          <li className="col-span-2 row-start-3">
-            <Link
-              to="/update-log"
-              className="flex h-[calc(var(--asfc-row)/2)] items-center justify-center bg-white px-3 text-center font-mono text-sm font-bold tracking-[0.06em] text-navy shadow-sm transition hover:bg-[rgb(240,244,248)] sm:text-base sm:tracking-[0.1em] md:text-lg"
-            >
-              UPDATE LOG
-            </Link>
-          </li>
+          {WIDE_BUTTONS.map((button, index) => (
+            <li key={button.to} className="col-span-2" style={{ gridRow: 3 + index }}>
+              <Link
+                to={button.to}
+                className="flex h-[calc(var(--asfc-row)/2)] items-center justify-center bg-white px-3 text-center font-mono text-sm font-bold tracking-[0.06em] text-navy shadow-sm transition hover:bg-[rgb(240,244,248)] sm:text-base sm:tracking-[0.1em] md:text-lg"
+              >
+                {button.label}
+              </Link>
+            </li>
+          ))}
         </ul>
       </nav>
     </div>

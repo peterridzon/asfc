@@ -2,6 +2,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AlertPopup } from './components/AlertPopup'
 import { Layout } from './components/Layout'
 import { Admin } from './pages/Admin'
+import { Archive } from './pages/Archive'
+import { ArchiveRegions } from './pages/ArchiveRegions'
 import { Alerts } from './pages/Alerts'
 import { Home } from './pages/Home'
 import { NotFound } from './pages/NotFound'
@@ -23,6 +25,8 @@ export function App() {
           <Route path="sources" element={<Sources />} />
           <Route path="outlook" element={<OutlookRegions />} />
           <Route path="outlook/:region" element={<Outlook />} />
+          <Route path="archive" element={<ArchiveRegions />} />
+          <Route path="archive/:region" element={<Archive />} />
           <Route path="alerts" element={<Alerts />} />
           <Route path="settings" element={<Settings />} />
           <Route path="update-log" element={<UpdateLog />} />

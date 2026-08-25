@@ -12,7 +12,7 @@ import { disclaimerHandled } from '../lib/disclaimer'
 import { LazyImage } from './LazyImage'
 
 /** Routes that greet the visitor with the experimental-use disclaimer. */
-const DISCLAIMER_ROUTES = /^\/(outlook|alerts)/
+const DISCLAIMER_ROUTES = /^\/(outlook|archive|alerts)/
 
 /**
  * Shows the published alerts when someone opens the site: the picture on the
