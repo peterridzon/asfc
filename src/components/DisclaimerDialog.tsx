@@ -1,16 +1,30 @@
 import { useEffect, useRef, useState } from 'react'
 
 const STORAGE_KEY = 'asfc.disclaimerHidden'
+const SESSION_KEY = 'asfc.disclaimerAcknowledged'
 
 const DISCLAIMER_TEXT =
   "Disclaimer: This website is for experimental purposes only! warnings, alerts and storm outlooks are not official and they don't replace official warnings, so if a warning is issued, double-check it on official warning platforms!"
 
-function hiddenForGood(): boolean {
+function alreadyHandled(): boolean {
   try {
-    return localStorage.getItem(STORAGE_KEY) === 'true'
+    // "Don't show this again" is permanent; "Got it!" lasts until the tab is
+    // closed, so navigating deeper into a section does not ask twice.
+    return (
+      localStorage.getItem(STORAGE_KEY) === 'true' ||
+      sessionStorage.getItem(SESSION_KEY) === 'true'
+    )
   } catch {
     // Private mode or blocked storage — just show the dialog.
     return false
+  }
+}
+
+function rememberForSession(): void {
+  try {
+    sessionStorage.setItem(SESSION_KEY, 'true')
+  } catch {
+    // Nothing to do — the dialog will simply appear again.
   }
 }
 
@@ -24,7 +38,7 @@ function hiddenForGood(): boolean {
  * of the height, because 0.707 x 0.707 = 0.5.
  */
 export function DisclaimerDialog() {
-  const [open, setOpen] = useState(() => !hiddenForGood())
+  const [open, setOpen] = useState(() => !alreadyHandled())
   const confirmRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
@@ -33,7 +47,10 @@ export function DisclaimerDialog() {
     confirmRef.current?.focus()
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpen(false)
+      if (event.key === 'Escape') {
+        rememberForSession()
+        setOpen(false)
+      }
     }
     document.addEventListener('keydown', onKeyDown)
 
@@ -77,7 +94,10 @@ export function DisclaimerDialog() {
           <button
             ref={confirmRef}
             type="button"
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              rememberForSession()
+              setOpen(false)
+            }}
             className="w-full bg-navy px-6 py-5 font-mono text-xl font-bold tracking-[0.12em] text-white uppercase transition hover:bg-navy-soft sm:text-2xl"
           >
             Got it!

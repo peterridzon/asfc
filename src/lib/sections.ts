@@ -48,6 +48,37 @@ export const SECTIONS: SectionDefinition[] = [
   },
 ]
 
+/** The two regional outlooks reached from the Storm Outlook page. */
+export interface OutlookRegion {
+  /** URL segment: /outlook/<slug> */
+  slug: string
+  /** Which collection of images it publishes to. */
+  section: 'outlook-slovakia' | 'outlook-czechia'
+  /** Text on the button. */
+  label: string
+  /** Heading on the region's own page. */
+  title: string
+}
+
+export const OUTLOOK_REGIONS: OutlookRegion[] = [
+  {
+    slug: 'slovakia',
+    section: 'outlook-slovakia',
+    label: 'FORECAST FOR SLOVAKIA',
+    title: 'Forecast for Slovakia',
+  },
+  {
+    slug: 'czechia',
+    section: 'outlook-czechia',
+    label: 'FORECAST FOR CZECHIA',
+    title: 'Forecast for Czechia',
+  },
+]
+
+export function getOutlookRegion(slug: string): OutlookRegion | undefined {
+  return OUTLOOK_REGIONS.find((region) => region.slug === slug)
+}
+
 export function getSection(id: string): SectionDefinition | undefined {
   return SECTIONS.find((section) => section.id === id)
 }

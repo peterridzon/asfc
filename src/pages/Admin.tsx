@@ -14,7 +14,8 @@ import { usePosts } from '../lib/usePosts'
 import { useDocumentMeta } from '../lib/useDocumentMeta'
 
 const SECTIONS: Array<{ value: Section; label: string }> = [
-  { value: 'outlook', label: 'Storm Outlook' },
+  { value: 'outlook-slovakia', label: 'Storm Outlook — Slovakia' },
+  { value: 'outlook-czechia', label: 'Storm Outlook — Czechia' },
   { value: 'alerts', label: 'Alerts / Varovania' },
 ]
 
@@ -164,7 +165,7 @@ function Publisher({ onSignedOut }: { onSignedOut: () => void }) {
       <form ref={formRef} onSubmit={handleSubmit} className="mt-6 space-y-4">
         <fieldset>
           <legend className="label-tech">Page</legend>
-          <div className="mt-2 grid grid-cols-2 gap-3">
+          <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-3">
             {SECTIONS.map((section, index) => (
               <label
                 key={section.value}

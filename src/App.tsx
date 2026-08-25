@@ -5,6 +5,7 @@ import { Alerts } from './pages/Alerts'
 import { Home } from './pages/Home'
 import { NotFound } from './pages/NotFound'
 import { Outlook } from './pages/Outlook'
+import { OutlookRegions } from './pages/OutlookRegions'
 import { Sources } from './pages/Sources'
 import { UpdateLog } from './pages/UpdateLog'
 
@@ -16,7 +17,8 @@ export function App() {
         <Route index element={<Home />} />
         <Route element={<Layout />}>
           <Route path="sources" element={<Sources />} />
-          <Route path="outlook" element={<Outlook />} />
+          <Route path="outlook" element={<OutlookRegions />} />
+          <Route path="outlook/:region" element={<Outlook />} />
           <Route path="alerts" element={<Alerts />} />
           <Route path="update-log" element={<UpdateLog />} />
           <Route path="admin" element={<Admin />} />

@@ -3,7 +3,10 @@
  * shim, so both speak exactly the same HTTP contract.
  */
 
-export type Section = 'outlook' | 'alerts'
+/** Every collection of images the site can publish to. */
+export type Section = 'outlook-slovakia' | 'outlook-czechia' | 'alerts'
+
+export const SECTIONS: readonly Section[] = ['outlook-slovakia', 'outlook-czechia', 'alerts']
 
 export interface Post {
   id: string
@@ -57,7 +60,7 @@ export const EXTENSION_BY_TYPE: Record<string, string> = {
 }
 
 export function isSection(value: unknown): value is Section {
-  return value === 'outlook' || value === 'alerts'
+  return SECTIONS.includes(value as Section)
 }
 
 export function json(data: unknown, status = 200, headers: Record<string, string> = {}): Response {
