@@ -4,9 +4,14 @@
  */
 
 /** Every collection of images the site can publish to. */
-export type Section = 'outlook-slovakia' | 'outlook-czechia' | 'alerts'
+export type Section = 'outlook-austria' | 'outlook-czechia' | 'outlook-slovakia' | 'alerts'
 
-export const SECTIONS: readonly Section[] = ['outlook-slovakia', 'outlook-czechia', 'alerts']
+export const SECTIONS: readonly Section[] = [
+  'outlook-austria',
+  'outlook-czechia',
+  'outlook-slovakia',
+  'alerts',
+]
 
 export interface Post {
   id: string

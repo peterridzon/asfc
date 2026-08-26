@@ -53,7 +53,7 @@ export interface OutlookRegion {
   /** URL segment: /outlook/<slug> */
   slug: string
   /** Which collection of images it publishes to. */
-  section: 'outlook-slovakia' | 'outlook-czechia'
+  section: 'outlook-austria' | 'outlook-czechia' | 'outlook-slovakia'
   /** Country name on its own, e.g. "Slovakia". */
   country: string
   /** Text on the button. */
@@ -64,11 +64,11 @@ export interface OutlookRegion {
 
 export const OUTLOOK_REGIONS: OutlookRegion[] = [
   {
-    slug: 'slovakia',
-    section: 'outlook-slovakia',
-    country: 'Slovakia',
-    label: 'FORECAST FOR SLOVAKIA',
-    title: 'Forecast for Slovakia',
+    slug: 'austria',
+    section: 'outlook-austria',
+    country: 'Austria',
+    label: 'FORECAST FOR AUSTRIA',
+    title: 'Forecast for Austria',
   },
   {
     slug: 'czechia',
@@ -76,6 +76,13 @@ export const OUTLOOK_REGIONS: OutlookRegion[] = [
     country: 'Czechia',
     label: 'FORECAST FOR CZECHIA',
     title: 'Forecast for Czechia',
+  },
+  {
+    slug: 'slovakia',
+    section: 'outlook-slovakia',
+    country: 'Slovakia',
+    label: 'FORECAST FOR SLOVAKIA',
+    title: 'Forecast for Slovakia',
   },
 ]
 
@@ -88,7 +95,7 @@ export function getSection(id: string): SectionDefinition | undefined {
 }
 
 /** Shown in the top-left corner of the homepage. Bump this when you release. */
-export const VERSION_LABEL = 'current version 1.0.2'
+export const VERSION_LABEL = 'current version 1.2.0'
 
 export const DISCLAIMER =
   'This is for experimental purposes only and this doesn’t replace official weather warnings or forecasts.'

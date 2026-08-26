@@ -22,7 +22,7 @@ export function RegionChooser({ title, basePath, labelFor }: RegionChooserProps)
         </h1>
 
         <nav aria-label={title} className="mt-10">
-          <ul className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <ul className="grid grid-cols-1 gap-4">
             {OUTLOOK_REGIONS.map((region) => (
               <li key={region.slug}>
                 <Link
