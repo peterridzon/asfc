@@ -1,15 +1,24 @@
 import { Link } from 'react-router-dom'
 import { Logo } from '../components/Logo'
+import { openTutorial } from '../lib/tutorialOpen'
 import { useOutlookPath } from '../lib/useOutlookPath'
 import { DISCLAIMER, SECTIONS, VERSION_LABEL } from '../lib/sections'
 import { useDocumentMeta } from '../lib/useDocumentMeta'
 import type { SectionId } from '../types'
 
-/** Full-width buttons under the 2x2 block, in the order they appear. */
+/**
+ * Full-width buttons under the 2x2 block, in the order they appear.
+ * Tutorial only shows here on narrow screens — on wider ones it is the small
+ * button in the corner above Sources instead (see the `nav` below).
+ */
 const WIDE_BUTTONS = [
-  { to: '/update-log', label: 'UPDATE LOG' },
-  { to: '/archive', label: 'OUTLOOK ARCHIVE' },
+  { key: 'update-log', to: '/update-log', label: 'UPDATE LOG' },
+  { key: 'archive', to: '/archive', label: 'OUTLOOK ARCHIVE' },
+  { key: 'tutorial', onClick: openTutorial, label: 'TUTORIAL', mobileOnly: true },
 ]
+
+const wideButtonClass =
+  'flex h-[calc(var(--asfc-row)/2)] w-full items-center justify-center bg-white px-3 text-center font-mono text-sm font-bold tracking-[0.06em] text-navy shadow-sm transition hover:bg-[rgb(240,244,248)] sm:text-base sm:tracking-[0.1em] md:text-lg'
 
 /**
  * The 2x2 block: green above yellow, red to the right of yellow, and grey
@@ -62,39 +71,64 @@ export function Home() {
         aria-label="Sections"
         className="mt-8 flex flex-1 items-center [--asfc-row:6rem] sm:[--asfc-row:7rem] tall:absolute tall:top-1/2 tall:left-1/2 tall:mt-0 tall:block tall:w-full tall:-translate-x-1/2 tall:-translate-y-[calc(var(--asfc-row)+0.375rem)] tall:px-4"
       >
-        <ul className="mx-auto grid w-[min(38rem,92vw)] grid-cols-2 gap-3">
-          {SECTIONS.map((section) => (
-            <li key={section.id} className={CELL[section.id]}>
+        <div className="relative mx-auto w-[min(38rem,92vw)]">
+          {/*
+            The corner Tutorial button sits outside the grid (absolutely
+            positioned), so it cannot disturb the grid's own row layout or the
+            centring math above — it is 2.17x smaller than a coloured button
+            in both directions, aligned to Sources' left edge, with its bottom
+            edge one gap above the grid's top edge (i.e. right at Sources'
+            corner). Hidden below `sm`, where the mobile bar version takes over.
+          */}
+          <button
+            type="button"
+            onClick={openTutorial}
+            className="absolute bottom-[calc(100%+0.75rem)] left-0 hidden h-[calc(var(--asfc-row)/2.17)] w-[calc((100%-0.75rem)/4.34)] items-center justify-center bg-white px-2 text-center font-mono text-[10px] font-bold tracking-[0.06em] text-navy shadow-sm transition hover:bg-[rgb(240,244,248)] sm:flex sm:text-xs"
+          >
+            TUTORIAL
+          </button>
+
+          <ul className="grid grid-cols-2 gap-3">
+            {SECTIONS.map((section) => (
+              <li key={section.id} className={CELL[section.id]}>
+                <Link
+                  // Storm Outlook skips the chooser once a country is picked.
+                  to={section.id === 'outlook' ? outlook : section.path}
+                  className={`flex h-[var(--asfc-row)] items-center justify-center px-3 text-center font-mono text-sm leading-tight font-bold tracking-[0.06em] shadow-sm transition sm:text-base sm:tracking-[0.1em] md:text-lg ${section.button}`}
+                >
+                  {section.label}
+                </Link>
+              </li>
+            ))}
+
+            <li className="col-start-2 row-start-1">
               <Link
-                // Storm Outlook skips the chooser once a country is picked.
-                to={section.id === 'outlook' ? outlook : section.path}
-                className={`flex h-[var(--asfc-row)] items-center justify-center px-3 text-center font-mono text-sm leading-tight font-bold tracking-[0.06em] shadow-sm transition sm:text-base sm:tracking-[0.1em] md:text-lg ${section.button}`}
+                to="/settings"
+                className="flex h-[var(--asfc-row)] items-center justify-center bg-[rgb(170,178,188)] px-3 text-center font-mono text-sm leading-tight font-bold tracking-[0.06em] text-navy shadow-sm transition hover:bg-[rgb(150,159,170)] sm:text-base sm:tracking-[0.1em] md:text-lg"
               >
-                {section.label}
+                SETTINGS
               </Link>
             </li>
-          ))}
 
-          <li className="col-start-2 row-start-1">
-            <Link
-              to="/settings"
-              className="flex h-[var(--asfc-row)] items-center justify-center bg-[rgb(170,178,188)] px-3 text-center font-mono text-sm leading-tight font-bold tracking-[0.06em] text-navy shadow-sm transition hover:bg-[rgb(150,159,170)] sm:text-base sm:tracking-[0.1em] md:text-lg"
-            >
-              SETTINGS
-            </Link>
-          </li>
-
-          {WIDE_BUTTONS.map((button, index) => (
-            <li key={button.to} className="col-span-2" style={{ gridRow: 3 + index }}>
-              <Link
-                to={button.to}
-                className="flex h-[calc(var(--asfc-row)/2)] items-center justify-center bg-white px-3 text-center font-mono text-sm font-bold tracking-[0.06em] text-navy shadow-sm transition hover:bg-[rgb(240,244,248)] sm:text-base sm:tracking-[0.1em] md:text-lg"
+            {WIDE_BUTTONS.map((button, index) => (
+              <li
+                key={button.key}
+                className={`col-span-2 ${button.mobileOnly ? 'sm:hidden' : ''}`}
+                style={{ gridRow: 3 + index }}
               >
-                {button.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
+                {button.to ? (
+                  <Link to={button.to} className={wideButtonClass}>
+                    {button.label}
+                  </Link>
+                ) : (
+                  <button type="button" onClick={button.onClick} className={wideButtonClass}>
+                    {button.label}
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
       </nav>
     </div>
   )

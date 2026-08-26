@@ -1,7 +1,8 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AlertPopup } from './components/AlertPopup'
-import { WelcomeTutorial } from './components/WelcomeTutorial'
 import { Layout } from './components/Layout'
+import { TutorialOnDemand } from './components/TutorialOnDemand'
+import { WelcomeTutorial } from './components/WelcomeTutorial'
 import { Admin } from './pages/Admin'
 import { Archive } from './pages/Archive'
 import { ArchiveRegions } from './pages/ArchiveRegions'
@@ -19,6 +20,8 @@ export function App() {
     <BrowserRouter>
       {/* First-ever visit only. Disclaimer and alerts wait for this to close. */}
       <WelcomeTutorial />
+      {/* Replayable any time via openTutorial(), e.g. the homepage button. */}
+      <TutorialOnDemand />
       {/* Greets the visitor with any published alerts, on whichever page they land. */}
       <AlertPopup />
       <Routes>
