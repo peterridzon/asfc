@@ -9,6 +9,7 @@ import {
 } from '../lib/alertSettings'
 import { usePosts } from '../lib/usePosts'
 import { disclaimerHandled } from '../lib/disclaimer'
+import { useWelcomePending } from '../lib/useWelcomePending'
 import { LazyImage } from './LazyImage'
 
 /** Routes that greet the visitor with the experimental-use disclaimer. */
@@ -28,6 +29,7 @@ const DISCLAIMER_ROUTES = /^\/(outlook|archive|alerts)/
 export function AlertPopup() {
   const { pathname } = useLocation()
   const { posts } = usePosts('alerts')
+  const welcomePending = useWelcomePending()
 
   const [queue, setQueue] = useState<string[] | null>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
@@ -50,7 +52,7 @@ export function AlertPopup() {
 
   const remaining = queue ?? []
   const current = posts.find((post) => post.id === remaining[0]) ?? null
-  const visible = Boolean(current) && !blockedByDisclaimer
+  const visible = Boolean(current) && !blockedByDisclaimer && !welcomePending
 
   useEffect(() => {
     if (!visible) return

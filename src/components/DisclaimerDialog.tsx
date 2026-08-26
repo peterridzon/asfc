@@ -4,6 +4,7 @@ import {
   disclaimerHandled,
   hideDisclaimerForever,
 } from '../lib/disclaimer'
+import { useWelcomePending } from '../lib/useWelcomePending'
 
 const DISCLAIMER_TEXT =
   "Disclaimer: This website is for experimental purposes only! warnings, alerts and storm outlooks are not official and they don't replace official warnings, so if a warning is issued, double-check it on official warning platforms!"
@@ -19,10 +20,12 @@ const DISCLAIMER_TEXT =
  */
 export function DisclaimerDialog() {
   const [open, setOpen] = useState(() => !disclaimerHandled())
+  const welcomePending = useWelcomePending()
   const confirmRef = useRef<HTMLButtonElement>(null)
+  const visible = open && !welcomePending
 
   useEffect(() => {
-    if (!open) return
+    if (!visible) return
 
     confirmRef.current?.focus()
 
@@ -41,9 +44,9 @@ export function DisclaimerDialog() {
       document.removeEventListener('keydown', onKeyDown)
       document.body.style.overflow = previousOverflow
     }
-  }, [open])
+  }, [visible])
 
-  if (!open) return null
+  if (!visible) return null
 
   const neverAgain = () => {
     hideDisclaimerForever()

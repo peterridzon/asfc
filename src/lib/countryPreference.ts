@@ -68,6 +68,7 @@ export function resetAllSettings(): void {
     'asfc.showAlertPopups',
     'asfc.dismissedAlerts',
     'asfc.disclaimerHidden',
+    'asfc.welcomeSeen',
   ]
   const sessionKeys = ['asfc.alertsSeenThisVisit', 'asfc.disclaimerAcknowledged']
 

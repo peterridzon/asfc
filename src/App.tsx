@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AlertPopup } from './components/AlertPopup'
+import { WelcomeTutorial } from './components/WelcomeTutorial'
 import { Layout } from './components/Layout'
 import { Admin } from './pages/Admin'
 import { Archive } from './pages/Archive'
@@ -16,6 +17,8 @@ import { UpdateLog } from './pages/UpdateLog'
 export function App() {
   return (
     <BrowserRouter>
+      {/* First-ever visit only. Disclaimer and alerts wait for this to close. */}
+      <WelcomeTutorial />
       {/* Greets the visitor with any published alerts, on whichever page they land. */}
       <AlertPopup />
       <Routes>
