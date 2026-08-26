@@ -33,17 +33,22 @@ export function CountryDialog({ onClose, onChosen }: CountryDialogProps) {
       </p>
 
       {picking ? (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          {OUTLOOK_REGIONS.map((region) => (
-            <button
-              key={region.slug}
-              type="button"
-              onClick={() => choose(region.slug as CountrySlug)}
-              className="flex min-h-20 items-center justify-center bg-[rgb(255,208,0)] px-4 font-mono text-base font-bold tracking-[0.1em] text-navy uppercase transition hover:bg-[rgb(232,189,0)] sm:text-lg"
-            >
-              {region.country}
-            </button>
-          ))}
+        <div className="flex flex-col items-center gap-3">
+          <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2">
+            {OUTLOOK_REGIONS.map((region) => (
+              <button
+                key={region.slug}
+                type="button"
+                onClick={() => choose(region.slug as CountrySlug)}
+                className="flex min-h-20 items-center justify-center bg-[rgb(255,208,0)] px-4 font-mono text-base font-bold tracking-[0.1em] text-navy uppercase transition hover:bg-[rgb(232,189,0)] sm:text-lg"
+              >
+                {region.country}
+              </button>
+            ))}
+          </div>
+          <button type="button" onClick={onClose} className={secondary}>
+            Close
+          </button>
         </div>
       ) : (
         <div className="flex flex-col items-center gap-3">

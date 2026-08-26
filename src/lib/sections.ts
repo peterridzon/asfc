@@ -95,7 +95,7 @@ export function getSection(id: string): SectionDefinition | undefined {
 }
 
 /** Shown in the top-left corner of the homepage. Bump this when you release. */
-export const VERSION_LABEL = 'current version 1.2.0'
+export const VERSION_LABEL = 'current version 1.2.1'
 
 export const DISCLAIMER =
   'This is for experimental purposes only and this doesn’t replace official weather warnings or forecasts.'
