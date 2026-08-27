@@ -75,23 +75,41 @@ export async function handleSession(request: Request, env: CmsEnv): Promise<Resp
 
 /* ---------------------------------------------------------------- posts --- */
 
-/**
- * Translates one field through Workers AI. Empty text and a missing binding
- * both fall through unchanged — the post still displays, just untranslated.
- */
-async function translateField(env: CmsEnv, text: string, targetWord: string): Promise<string> {
-  if (!text || !env.AI) return text
+/** Splits on sentence boundaries, keeping the punctuation on each sentence. */
+function splitSentences(text: string): string[] {
+  return (text.match(/[^.!?]+[.!?]*(?:\s+|$)/g) ?? [text]).map((part) => part.trim()).filter(Boolean)
+}
+
+async function translateSentence(env: CmsEnv, sentence: string, targetWord: string): Promise<string> {
   try {
-    const result = (await env.AI.run('@cf/meta/m2m100-1.2b', {
-      text,
+    const result = (await env.AI!.run('@cf/meta/m2m100-1.2b', {
+      text: sentence,
       source_lang: 'english',
       target_lang: targetWord,
     })) as { translated_text?: string }
-    return result.translated_text?.trim() || text
+    return result.translated_text?.trim() || sentence
   } catch {
     // A translation hiccup should never take the post off the page.
-    return text
+    return sentence
   }
+}
+
+/**
+ * Translates one field through Workers AI. Empty text and a missing binding
+ * both fall through unchanged — the post still displays, just untranslated.
+ *
+ * Sentences are translated one at a time rather than as one block: testing
+ * against the live model showed multi-sentence captions losing whole
+ * sentences, and in one case mistranslating "Hungary" as "Greenland" — both
+ * disappeared once each sentence went through on its own.
+ */
+async function translateField(env: CmsEnv, text: string, targetWord: string): Promise<string> {
+  if (!text || !env.AI) return text
+  const sentences = splitSentences(text)
+  const translated = await Promise.all(
+    sentences.map((sentence) => translateSentence(env, sentence, targetWord)),
+  )
+  return translated.join(' ')
 }
 
 /**
