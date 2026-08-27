@@ -13,6 +13,9 @@ import type { UpdateLogEntry } from '../types'
  * ============================================================================
  */
 export const updateLog: UpdateLogEntry[] = [
+  { id: '1.4.2', text: 'version 1.4.2 - translation fixes' },
+  { id: '1.4', text: 'version 1.4 - added language switcher' },
+  { id: '1.3', text: 'version 1.3 - added hungary' },
   { id: '1.2.1', text: 'version 1.2.1 - fixed country selection' },
   { id: '1.2.0', text: 'version 1.2 - added austria' },
   { id: '1.0.2', text: 'version 1.0.2 - tutorial button' },
