@@ -17,8 +17,11 @@ async function readError(response: Response, fallback: string): Promise<string> 
   }
 }
 
-export async function fetchPosts(signal?: AbortSignal): Promise<Post[]> {
-  const response = await fetch('/api/posts', { signal })
+export async function fetchPosts(signal?: AbortSignal, lang?: string): Promise<Post[]> {
+  // 'en' is the language every post is written in, so there is nothing to ask
+  // the server to translate.
+  const query = lang && lang !== 'en' ? `?lang=${encodeURIComponent(lang)}` : ''
+  const response = await fetch(`/api/posts${query}`, { signal })
   if (!response.ok) throw new Error(await readError(response, `HTTP ${response.status}`))
   const body = (await response.json()) as { posts?: Post[] }
   return body.posts ?? []

@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { countryTranslationKey } from '../lib/i18n/translations'
+import { useTranslation } from '../lib/i18n/useTranslation'
 import { setPreferredCountry, type CountrySlug } from '../lib/countryPreference'
 import { OUTLOOK_REGIONS } from '../lib/sections'
 import { Modal } from './Modal'
@@ -16,6 +18,7 @@ interface CountryDialogProps {
 
 /** Two steps: explain what picking a country does, then pick one. */
 export function CountryDialog({ onClose, onChosen }: CountryDialogProps) {
+  const { t } = useTranslation()
   const [picking, setPicking] = useState(false)
   const navigate = useNavigate()
 
@@ -26,10 +29,9 @@ export function CountryDialog({ onClose, onChosen }: CountryDialogProps) {
   }
 
   return (
-    <Modal label="Select your country" area={0.55} onClose={onClose}>
+    <Modal label={t('settings.selectCountry')} area={0.55} onClose={onClose}>
       <p className="text-center text-base leading-relaxed font-semibold text-navy sm:text-lg">
-        select your country so you will only get a storm outlook automatically for your selected
-        country.
+        {t('countryDialog.explain')}
       </p>
 
       {picking ? (
@@ -39,28 +41,28 @@ export function CountryDialog({ onClose, onChosen }: CountryDialogProps) {
               <button
                 key={region.slug}
                 type="button"
-                onClick={() => choose(region.slug as CountrySlug)}
+                onClick={() => choose(region.slug)}
                 className="flex min-h-20 items-center justify-center bg-[rgb(255,208,0)] px-4 font-mono text-base font-bold tracking-[0.1em] text-navy uppercase transition hover:bg-[rgb(232,189,0)] sm:text-lg"
               >
-                {region.country}
+                {t(countryTranslationKey(region.slug))}
               </button>
             ))}
           </div>
           <button type="button" onClick={onClose} className={secondary}>
-            Close
+            {t('header.close')}
           </button>
         </div>
       ) : (
         <div className="flex flex-col items-center gap-3">
           <button type="button" onClick={() => setPicking(true)} className={`w-full ${primary}`}>
-            OK
+            {t('countryDialog.ok')}
           </button>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <button type="button" onClick={onClose} className={secondary}>
-              No thanks
+              {t('countryDialog.noThanks')}
             </button>
             <button type="button" onClick={() => navigate('/')} className={secondary}>
-              Back to home
+              {t('countryDialog.backToHome')}
             </button>
           </div>
         </div>

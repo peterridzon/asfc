@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from '../lib/i18n/useTranslation'
 import { markWelcomeSeen } from '../lib/welcome'
 import { useWelcomePending } from '../lib/useWelcomePending'
 import { Modal } from './Modal'
@@ -16,6 +17,7 @@ const yellow =
  * popups hold off until this is answered (see useWelcomePending).
  */
 export function WelcomeTutorial() {
+  const { t } = useTranslation()
   const pending = useWelcomePending()
   const [step, setStep] = useState<'ask' | 'tutorial'>('ask')
 
@@ -23,16 +25,16 @@ export function WelcomeTutorial() {
 
   if (step === 'ask') {
     return (
-      <Modal label="Welcome to ASFC" area={0.4} onClose={markWelcomeSeen}>
+      <Modal label={t('welcome.dialogLabel')} area={0.4} onClose={markWelcomeSeen}>
         <p className="text-center text-lg leading-relaxed font-semibold text-navy sm:text-xl">
-          welcome to Asfc, would you like to have a quick tutorial?
+          {t('welcome.ask')}
         </p>
         <div className="flex flex-wrap justify-center gap-3">
           <button type="button" onClick={() => setStep('tutorial')} className={yellow}>
-            Yes
+            {t('welcome.yes')}
           </button>
           <button type="button" onClick={markWelcomeSeen} className={yellow}>
-            No
+            {t('welcome.no')}
           </button>
         </div>
       </Modal>
@@ -40,7 +42,7 @@ export function WelcomeTutorial() {
   }
 
   return (
-    <Modal label="ASFC tutorial" onClose={markWelcomeSeen}>
+    <Modal label={t('tutorial.dialogLabel')} onClose={markWelcomeSeen}>
       <TutorialContent onClose={markWelcomeSeen} />
     </Modal>
   )

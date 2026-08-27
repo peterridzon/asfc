@@ -1,17 +1,23 @@
 import { Link } from 'react-router-dom'
+import type { TranslationKey } from '../lib/i18n/translations'
+import { countryTranslationKey } from '../lib/i18n/translations'
+import { useTranslation } from '../lib/i18n/useTranslation'
 import { OUTLOOK_REGIONS } from '../lib/sections'
 import { DisclaimerDialog } from './DisclaimerDialog'
 
 interface RegionChooserProps {
-  title: string
+  titleKey: TranslationKey
   /** Where each region's page lives, e.g. "/outlook" or "/archive". */
   basePath: string
-  /** Text on each button, given the region's name. */
-  labelFor: (regionName: string) => string
+  /** Template with a {country} placeholder, e.g. "FORECAST FOR {country}". */
+  labelKey: TranslationKey
 }
 
-/** The two-button page that sits in front of the Slovak and Czech outlooks. */
-export function RegionChooser({ title, basePath, labelFor }: RegionChooserProps) {
+/** The button-per-country page that sits in front of the outlook and archive pages. */
+export function RegionChooser({ titleKey, basePath, labelKey }: RegionChooserProps) {
+  const { t } = useTranslation()
+  const title = t(titleKey)
+
   return (
     <>
       <DisclaimerDialog />
@@ -29,7 +35,7 @@ export function RegionChooser({ title, basePath, labelFor }: RegionChooserProps)
                   to={`${basePath}/${region.slug}`}
                   className="flex min-h-28 items-center justify-center bg-[rgb(255,208,0)] px-4 text-center font-mono text-base leading-tight font-bold tracking-[0.06em] text-navy shadow-sm transition hover:bg-[rgb(232,189,0)] sm:text-lg sm:tracking-[0.1em]"
                 >
-                  {labelFor(region.country)}
+                  {t(labelKey, { country: t(countryTranslationKey(region.slug)) })}
                 </Link>
               </li>
             ))}

@@ -1,18 +1,17 @@
 import { RegionChooser } from '../components/RegionChooser'
+import { useTranslation } from '../lib/i18n/useTranslation'
 import { useDocumentMeta } from '../lib/useDocumentMeta'
 
 /** Reached from the homepage: pick whose older outlooks to browse. */
 export function ArchiveRegions() {
-  useDocumentMeta(
-    'Outlook Archive',
-    'Previously published ASFC storm outlooks for Slovakia and Czechia.',
-  )
+  const { t } = useTranslation()
+  useDocumentMeta(t('archive.chooserTitle'), t('archive.chooserMetaDesc'))
 
   return (
     <RegionChooser
-      title="Outlook Archive"
+      titleKey="archive.chooserTitle"
       basePath="/archive"
-      labelFor={(country) => `${country.toUpperCase()} OUTLOOK ARCHIVE`}
+      labelKey="archive.countryArchive"
     />
   )
 }

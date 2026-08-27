@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { CountryDialog } from '../components/CountryDialog'
+import { LanguageDialog } from '../components/LanguageDialog'
 import { ResetSettingsDialog } from '../components/ResetSettingsDialog'
 import {
   alertPopupsEnabled,
@@ -8,7 +9,8 @@ import {
   setAlertPopupsEnabled,
 } from '../lib/alertSettings'
 import { clearPreferredCountry, preferredCountry, type CountrySlug } from '../lib/countryPreference'
-import { OUTLOOK_REGIONS } from '../lib/sections'
+import { countryTranslationKey } from '../lib/i18n/translations'
+import { useTranslation } from '../lib/i18n/useTranslation'
 import { useDocumentMeta } from '../lib/useDocumentMeta'
 
 const button =
@@ -16,16 +18,18 @@ const button =
 
 /** Visitor preferences. Everything here is stored in their own browser. */
 export function Settings() {
-  useDocumentMeta('Settings', 'Choose what ASFC shows you when you open the site.')
+  const { t } = useTranslation()
+  useDocumentMeta(t('settings.title'), t('settings.metaDesc'))
 
   const [alertsOpen, setAlertsOpen] = useState(false)
   const [popups, setPopups] = useState(alertPopupsEnabled)
   const [dismissedCount, setDismissedCount] = useState(() => dismissedAlertIds().length)
   const [countryOpen, setCountryOpen] = useState(false)
+  const [languageOpen, setLanguageOpen] = useState(false)
   const [resetOpen, setResetOpen] = useState(false)
   const [country, setCountry] = useState<CountrySlug | null>(preferredCountry)
 
-  const countryName = OUTLOOK_REGIONS.find((region) => region.slug === country)?.country
+  const countryName = country ? t(countryTranslationKey(country)) : null
 
   const togglePopups = () => {
     const next = !popups
@@ -41,7 +45,7 @@ export function Settings() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
       <h1 className="font-mono text-3xl font-extrabold tracking-[0.1em] text-navy uppercase sm:text-4xl">
-        Settings
+        {t('settings.title')}
       </h1>
 
       <div className="mt-8 space-y-3">
@@ -51,7 +55,7 @@ export function Settings() {
           aria-expanded={alertsOpen}
           className={button}
         >
-          Alert settings
+          {t('settings.alertSettings')}
         </button>
 
         {alertsOpen && (
@@ -63,21 +67,19 @@ export function Settings() {
                 aria-pressed={popups}
                 className="flex-1 border border-navy px-5 py-3.5 text-left font-mono text-sm font-bold tracking-[0.08em] text-navy uppercase transition hover:bg-sky-canvas sm:text-base"
               >
-                Show alert windows at opening website
+                {t('settings.showAlertPopups')}
               </button>
               <span
                 className={`font-mono text-lg font-bold tracking-[0.14em] uppercase ${
                   popups ? 'text-asfc-green' : 'text-[rgb(196,26,26)]'
                 }`}
               >
-                {popups ? 'on' : 'off'}
+                {popups ? t('settings.on') : t('settings.off')}
               </span>
             </div>
 
             <p className="text-sm text-navy-soft">
-              {popups
-                ? 'Alerts appear in a window when you open the site.'
-                : 'Alert windows stay hidden until you switch this back on.'}
+              {popups ? t('settings.alertsOnDesc') : t('settings.alertsOffDesc')}
             </p>
 
             {dismissedCount > 0 && (
@@ -87,29 +89,22 @@ export function Settings() {
                   onClick={restoreAlerts}
                   className="border border-hairline px-4 py-2.5 font-mono text-xs tracking-[0.1em] text-navy-soft uppercase transition hover:bg-sky-canvas hover:text-navy"
                 >
-                  Show hidden alerts again ({dismissedCount})
+                  {t('settings.showHiddenAlerts', { count: dismissedCount })}
                 </button>
-                <p className="mt-2 text-xs text-navy-faint">
-                  Brings back the alerts you hid with “Don’t show this alert again”.
-                </p>
+                <p className="mt-2 text-xs text-navy-faint">{t('settings.showHiddenAlertsDesc')}</p>
               </div>
             )}
           </div>
         )}
 
-        <button
-          type="button"
-          onClick={() => setCountryOpen(true)}
-          className={button}
-        >
-          Select your country
+        <button type="button" onClick={() => setCountryOpen(true)} className={button}>
+          {t('settings.selectCountry')}
         </button>
 
-        {country && (
+        {country && countryName && (
           <div className="flex flex-wrap items-center gap-3 border-l-2 border-hairline pl-4">
             <p className="text-sm text-navy-soft">
-              Storm Outlook opens <span className="font-semibold text-navy">{countryName}</span>{' '}
-              straight away.
+              {t('settings.countryOpensStraightAway', { country: countryName })}
             </p>
             <button
               type="button"
@@ -119,19 +114,24 @@ export function Settings() {
               }}
               className="border border-hairline px-4 py-2 font-mono text-xs tracking-[0.1em] text-navy-soft uppercase transition hover:bg-sky-canvas hover:text-navy"
             >
-              Clear
+              {t('settings.clear')}
             </button>
           </div>
         )}
 
+        <button type="button" onClick={() => setLanguageOpen(true)} className={button}>
+          {t('settings.language')}
+        </button>
+
         <button type="button" onClick={() => setResetOpen(true)} className={button}>
-          Reset settings
+          {t('settings.resetSettings')}
         </button>
       </div>
 
       {countryOpen && (
         <CountryDialog onClose={() => setCountryOpen(false)} onChosen={setCountry} />
       )}
+      {languageOpen && <LanguageDialog onClose={() => setLanguageOpen(false)} />}
       {resetOpen && <ResetSettingsDialog onClose={() => setResetOpen(false)} />}
     </div>
   )

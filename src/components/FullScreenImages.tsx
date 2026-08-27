@@ -1,3 +1,4 @@
+import { useTranslation } from '../lib/i18n/useTranslation'
 import { LazyImage } from './LazyImage'
 import type { Post } from '../lib/api'
 
@@ -14,11 +15,13 @@ interface FullScreenImagesProps {
  * ever cut off. Any text on the entry is printed underneath.
  */
 export function FullScreenImages({ posts, loading, error, emptyHint }: FullScreenImagesProps) {
+  const { t } = useTranslation()
+
   if (loading || error || posts.length === 0) {
     return (
       <div className="flex min-h-[calc(100dvh-10rem)] items-center justify-center px-6 text-center">
         <p className="max-w-md text-sm text-navy-soft">
-          {loading ? 'Loading…' : error ? error : emptyHint}
+          {loading ? t('common.loading') : error ? error : emptyHint}
         </p>
       </div>
     )

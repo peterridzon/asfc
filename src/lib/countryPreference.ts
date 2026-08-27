@@ -1,9 +1,11 @@
+import { OUTLOOK_REGIONS, type OutlookRegion } from './sections'
+
 const KEY = 'asfc.preferredCountry'
 
 /** Slug of an entry in OUTLOOK_REGIONS, or null when nothing is chosen. */
-export type CountrySlug = 'austria' | 'czechia' | 'slovakia' | 'hungary'
+export type CountrySlug = OutlookRegion['slug']
 
-const VALID: CountrySlug[] = ['austria', 'czechia', 'slovakia', 'hungary']
+const VALID: CountrySlug[] = OUTLOOK_REGIONS.map((region) => region.slug)
 
 export function preferredCountry(): CountrySlug | null {
   try {

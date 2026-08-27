@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom'
 import { Logo } from '../components/Logo'
+import { useTranslation } from '../lib/i18n/useTranslation'
+import type { TranslationKey } from '../lib/i18n/translations'
 import { openTutorial } from '../lib/tutorialOpen'
 import { useOutlookPath } from '../lib/useOutlookPath'
-import { DISCLAIMER, SECTIONS, VERSION_LABEL } from '../lib/sections'
+import { SECTIONS, VERSION_LABEL } from '../lib/sections'
 import { useDocumentMeta } from '../lib/useDocumentMeta'
 import type { SectionId } from '../types'
 
@@ -11,10 +13,16 @@ import type { SectionId } from '../types'
  * Tutorial only shows here on narrow screens — on wider ones it is the small
  * button in the corner above Sources instead (see the `nav` below).
  */
-const WIDE_BUTTONS = [
-  { key: 'update-log', to: '/update-log', label: 'UPDATE LOG' },
-  { key: 'archive', to: '/archive', label: 'OUTLOOK ARCHIVE' },
-  { key: 'tutorial', onClick: openTutorial, label: 'TUTORIAL', mobileOnly: true },
+const WIDE_BUTTONS: Array<{
+  key: string
+  labelKey: TranslationKey
+  to?: string
+  onClick?: () => void
+  mobileOnly?: boolean
+}> = [
+  { key: 'update-log', to: '/update-log', labelKey: 'home.updateLog' },
+  { key: 'archive', to: '/archive', labelKey: 'home.outlookArchive' },
+  { key: 'tutorial', onClick: openTutorial, labelKey: 'home.tutorial', mobileOnly: true },
 ]
 
 const wideButtonClass =
@@ -40,7 +48,8 @@ const CELL: Record<SectionId, string> = {
  * heading and the page scrolls — see the `tall` variant in index.css.
  */
 export function Home() {
-  useDocumentMeta('ASFC', `ASFC — Amateur Storm Forecast Center. ${DISCLAIMER}`)
+  const { t } = useTranslation()
+  useDocumentMeta('ASFC', t('home.metaDesc'))
   const outlook = useOutlookPath()
 
   return (
@@ -55,10 +64,10 @@ export function Home() {
           <span>ASFC</span>
         </h1>
         <p className="mt-3 font-mono text-base font-semibold tracking-[0.16em] text-navy-soft uppercase sm:mt-4 sm:text-2xl">
-          Amateur Storm Forecast Center
+          {t('app.tagline')}
         </p>
         <p className="mx-auto mt-4 max-w-3xl text-sm leading-snug font-semibold text-navy sm:mt-6 sm:text-lg">
-          {DISCLAIMER}
+          {t('disclaimer.short')}
         </p>
       </header>
 
@@ -85,7 +94,7 @@ export function Home() {
             onClick={openTutorial}
             className="absolute bottom-[calc(100%+0.75rem)] left-0 hidden h-[calc(var(--asfc-row)/2.17)] w-[calc((100%-0.75rem)/4.34)] items-center justify-center bg-white px-2 text-center font-mono text-[10px] font-bold tracking-[0.06em] text-navy shadow-sm transition hover:bg-[rgb(240,244,248)] sm:flex sm:text-xs"
           >
-            TUTORIAL
+            {t('home.tutorial')}
           </button>
 
           <ul className="grid grid-cols-2 gap-3">
@@ -96,7 +105,7 @@ export function Home() {
                   to={section.id === 'outlook' ? outlook : section.path}
                   className={`flex h-[var(--asfc-row)] items-center justify-center px-3 text-center font-mono text-sm leading-tight font-bold tracking-[0.06em] shadow-sm transition sm:text-base sm:tracking-[0.1em] md:text-lg ${section.button}`}
                 >
-                  {section.label}
+                  {t(section.labelKey)}
                 </Link>
               </li>
             ))}
@@ -106,7 +115,7 @@ export function Home() {
                 to="/settings"
                 className="flex h-[var(--asfc-row)] items-center justify-center bg-[rgb(170,178,188)] px-3 text-center font-mono text-sm leading-tight font-bold tracking-[0.06em] text-navy shadow-sm transition hover:bg-[rgb(150,159,170)] sm:text-base sm:tracking-[0.1em] md:text-lg"
               >
-                SETTINGS
+                {t('home.settings')}
               </Link>
             </li>
 
@@ -118,11 +127,11 @@ export function Home() {
               >
                 {button.to ? (
                   <Link to={button.to} className={wideButtonClass}>
-                    {button.label}
+                    {t(button.labelKey)}
                   </Link>
                 ) : (
                   <button type="button" onClick={button.onClick} className={wideButtonClass}>
-                    {button.label}
+                    {t(button.labelKey)}
                   </button>
                 )}
               </li>

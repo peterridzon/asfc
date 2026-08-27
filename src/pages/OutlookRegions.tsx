@@ -1,18 +1,13 @@
 import { RegionChooser } from '../components/RegionChooser'
+import { useTranslation } from '../lib/i18n/useTranslation'
 import { useDocumentMeta } from '../lib/useDocumentMeta'
 
 /** Reached from the yellow homepage button: pick which country to look at. */
 export function OutlookRegions() {
-  useDocumentMeta(
-    'Storm Outlook',
-    'Experimental amateur storm outlooks published by ASFC for Slovakia and Czechia.',
-  )
+  const { t } = useTranslation()
+  useDocumentMeta(t('outlook.chooserTitle'), t('outlook.chooserMetaDesc'))
 
   return (
-    <RegionChooser
-      title="Storm Outlook"
-      basePath="/outlook"
-      labelFor={(country) => `FORECAST FOR ${country.toUpperCase()}`}
-    />
+    <RegionChooser titleKey="outlook.chooserTitle" basePath="/outlook" labelKey="outlook.forecastFor" />
   )
 }

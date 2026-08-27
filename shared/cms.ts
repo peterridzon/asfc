@@ -41,11 +41,40 @@ export interface KvNamespace {
   delete(key: string): Promise<void>
 }
 
+/** Minimal shape of the Workers AI binding — only what the translator calls. */
+export interface AiBinding {
+  run: (
+    model: string,
+    input: { text: string; source_lang?: string; target_lang: string },
+  ) => Promise<{ translated_text?: string } | unknown>
+}
+
 export interface CmsEnv {
   ASFC_KV?: KvNamespace
   ADMIN_PASSWORD?: string
   AUTH_SECRET?: string
+  /** Powers automatic translation of published alt text and captions. */
+  AI?: AiBinding
 }
+
+/**
+ * The languages ASFC can translate published content into, mapped to the
+ * word Cloudflare's m2m100 translation model expects for `target_lang`.
+ * English is the language everything is written in, so it needs no entry.
+ */
+export const AI_TARGET_LANG: Record<string, string> = {
+  de: 'german',
+  cs: 'czech',
+  sk: 'slovak',
+  hu: 'hungarian',
+}
+
+export function isTranslatableLang(value: string | null | undefined): value is keyof typeof AI_TARGET_LANG {
+  return !!value && value in AI_TARGET_LANG
+}
+
+/** KV key holding the cached translation of one post into one language. */
+export const translationKey = (postId: string, lang: string) => `tr:${postId}:${lang}`
 
 export const POSTS_KEY = 'posts'
 export const imageKey = (id: string) => `img:${id}`

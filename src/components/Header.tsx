@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { SECTIONS } from '../lib/sections'
 import { useOutlookPath } from '../lib/useOutlookPath'
+import { useTranslation } from '../lib/i18n/useTranslation'
+import { SECTIONS } from '../lib/sections'
 
 /** Shown on every page except the homepage. */
 export function Header() {
   const location = useLocation()
   const outlook = useOutlookPath()
+  const { t } = useTranslation()
   // Remembering which route the menu was opened on closes it on navigation.
   const [openedOn, setOpenedOn] = useState<string | null>(null)
   const open = openedOn === location.pathname
@@ -23,7 +25,7 @@ export function Header() {
           to="/"
           className="bg-navy px-7 py-4 font-mono text-[22px] font-bold tracking-[0.14em] text-white uppercase transition hover:bg-navy-soft sm:text-2xl"
         >
-          ← Back to home
+          {t('header.backToHome')}
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex" aria-label="Main navigation">
@@ -33,7 +35,7 @@ export function Header() {
               to={section.id === 'outlook' ? outlook : section.path}
               className={linkClass}
             >
-              {section.label}
+              {t(section.labelKey)}
             </NavLink>
           ))}
         </nav>
@@ -45,7 +47,7 @@ export function Header() {
           aria-controls="asfc-mobile-nav"
           onClick={() => setOpenedOn(open ? null : location.pathname)}
         >
-          {open ? 'Close' : 'Menu'}
+          {open ? t('header.close') : t('header.menu')}
         </button>
       </div>
 
@@ -62,7 +64,7 @@ export function Header() {
                   to={section.id === 'outlook' ? outlook : section.path}
                   className={({ isActive }) => `${linkClass({ isActive })} block`}
                 >
-                  {section.label}
+                  {t(section.labelKey)}
                 </NavLink>
               </li>
             ))}

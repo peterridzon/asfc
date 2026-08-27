@@ -8,8 +8,13 @@ export interface PostsState {
   reload: () => void
 }
 
-/** Loads the published posts, optionally filtered to one section. */
-export function usePosts(section?: Section): PostsState {
+/**
+ * Loads the published posts, optionally filtered to one section and
+ * translated server-side into the given language (anything other than
+ * 'en' asks the Worker to run the post's alt text and caption through
+ * Cloudflare Workers AI, cached per post so it only happens once).
+ */
+export function usePosts(section?: Section, lang?: string): PostsState {
   const [posts, setPosts] = useState<Post[]>([])
   // Starts true and is only ever set from the request's callbacks, never
   // synchronously inside the effect.
@@ -21,7 +26,7 @@ export function usePosts(section?: Section): PostsState {
     const controller = new AbortController()
     let active = true
 
-    fetchPosts(controller.signal)
+    fetchPosts(controller.signal, lang)
       .then((all) => {
         if (!active) return
         setPosts(section ? all.filter((post) => post.section === section) : all)
@@ -39,7 +44,7 @@ export function usePosts(section?: Section): PostsState {
       active = false
       controller.abort()
     }
-  }, [section, nonce])
+  }, [section, lang, nonce])
 
   const reload = useCallback(() => setNonce((value) => value + 1), [])
   return { posts, loading, error, reload }

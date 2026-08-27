@@ -4,10 +4,8 @@ import {
   disclaimerHandled,
   hideDisclaimerForever,
 } from '../lib/disclaimer'
+import { useTranslation } from '../lib/i18n/useTranslation'
 import { useWelcomePending } from '../lib/useWelcomePending'
-
-const DISCLAIMER_TEXT =
-  "Disclaimer: This website is for experimental purposes only! warnings, alerts and storm outlooks are not official and they don't replace official warnings, so if a warning is issued, double-check it on official warning platforms!"
 
 /**
  * Shown every time the Storm Outlook or Alerts page is opened.
@@ -19,6 +17,7 @@ const DISCLAIMER_TEXT =
  * of the height, because 0.707 x 0.707 = 0.5.
  */
 export function DisclaimerDialog() {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(() => !disclaimerHandled())
   const welcomePending = useWelcomePending()
   const confirmRef = useRef<HTMLButtonElement>(null)
@@ -66,7 +65,7 @@ export function DisclaimerDialog() {
           id="asfc-disclaimer-text"
           className="text-center text-base leading-relaxed font-semibold text-navy sm:text-lg"
         >
-          {DISCLAIMER_TEXT}
+          {t('disclaimerDialog.text')}
         </p>
 
         <div className="flex flex-col items-center gap-3">
@@ -79,7 +78,7 @@ export function DisclaimerDialog() {
             }}
             className="w-full bg-navy px-6 py-5 font-mono text-xl font-bold tracking-[0.12em] text-white uppercase transition hover:bg-navy-soft sm:text-2xl"
           >
-            Got it!
+            {t('disclaimerDialog.gotIt')}
           </button>
 
           <button
@@ -87,7 +86,7 @@ export function DisclaimerDialog() {
             onClick={neverAgain}
             className="border border-hairline px-4 py-2.5 font-mono text-xs tracking-[0.12em] text-navy-soft uppercase transition hover:bg-sky-canvas hover:text-navy"
           >
-            Don&rsquo;t show this again
+            {t('disclaimerDialog.dontShowAgain')}
           </button>
         </div>
       </div>

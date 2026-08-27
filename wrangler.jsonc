@@ -24,6 +24,11 @@
     { "pattern": "www.asfc.live", "custom_domain": true }
   ],
 
+  // Powers automatic translation of published alt text and captions
+  // (shared/handlers.ts). No separate signup or token needed — this binding
+  // alone gives the Worker access to Cloudflare's hosted translation model.
+  "ai": { "binding": "AI" },
+
   // Published images and their text. This id is not a secret — reading or
   // writing the namespace still requires Cloudflare account credentials.
   "kv_namespaces": [

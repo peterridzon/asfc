@@ -5,14 +5,17 @@
  */
 import { clearSessionCookie, createSessionCookie, isSignedIn, passwordMatches } from './auth'
 import {
+  AI_TARGET_LANG,
   ALLOWED_IMAGE_TYPES,
   EXTENSION_BY_TYPE,
   MAX_IMAGE_BYTES,
   imageKey,
   isSection,
+  isTranslatableLang,
   json,
   newId,
   readPosts,
+  translationKey,
   writePosts,
   type CmsEnv,
   type KvNamespace,
@@ -72,12 +75,64 @@ export async function handleSession(request: Request, env: CmsEnv): Promise<Resp
 
 /* ---------------------------------------------------------------- posts --- */
 
-export async function handleListPosts(env: CmsEnv): Promise<Response> {
+/**
+ * Translates one field through Workers AI. Empty text and a missing binding
+ * both fall through unchanged — the post still displays, just untranslated.
+ */
+async function translateField(env: CmsEnv, text: string, targetWord: string): Promise<string> {
+  if (!text || !env.AI) return text
+  try {
+    const result = (await env.AI.run('@cf/meta/m2m100-1.2b', {
+      text,
+      source_lang: 'english',
+      target_lang: targetWord,
+    })) as { translated_text?: string }
+    return result.translated_text?.trim() || text
+  } catch {
+    // A translation hiccup should never take the post off the page.
+    return text
+  }
+}
+
+/**
+ * Posts are never edited after publishing (only created or deleted), so a
+ * translation cached under a post's id can never go stale — it is computed
+ * once, on whichever request happens to need it first.
+ */
+async function translatePost(env: CmsEnv, kv: KvNamespace, post: Post, lang: string): Promise<Post> {
+  const targetWord = AI_TARGET_LANG[lang]
+  if (!targetWord || (!post.alt && !post.text)) return post
+
+  const key = translationKey(post.id, lang)
+  const cached = await kv.get(key, 'text')
+  if (cached) {
+    try {
+      const parsed = JSON.parse(cached) as { alt: string; text: string }
+      return { ...post, alt: parsed.alt, text: parsed.text }
+    } catch {
+      /* corrupt cache entry — fall through and re-translate */
+    }
+  }
+
+  const [alt, text] = await Promise.all([
+    translateField(env, post.alt, targetWord),
+    translateField(env, post.text, targetWord),
+  ])
+  await kv.put(key, JSON.stringify({ alt, text }))
+  return { ...post, alt, text }
+}
+
+export async function handleListPosts(env: CmsEnv, lang?: string | null): Promise<Response> {
   const kv = requireKv(env)
   if (kv instanceof Response) return json({ posts: [] })
-  return json({ posts: await readPosts(kv) }, 200, {
-    'cache-control': 'public, max-age=30, s-maxage=60',
-  })
+  const posts = await readPosts(kv)
+
+  if (!isTranslatableLang(lang)) {
+    return json({ posts }, 200, { 'cache-control': 'public, max-age=30, s-maxage=60' })
+  }
+
+  const translated = await Promise.all(posts.map((post) => translatePost(env, kv, post, lang)))
+  return json({ posts: translated }, 200, { 'cache-control': 'public, max-age=30, s-maxage=60' })
 }
 
 export async function handleCreatePost(request: Request, env: CmsEnv): Promise<Response> {
@@ -183,7 +238,9 @@ export async function routeCmsRequest(
   if (path === '/session' && method === 'GET') return handleSession(request, env)
   if (path === '/login' && method === 'POST') return handleLogin(request, env)
   if (path === '/logout' && method === 'POST') return handleLogout()
-  if (path === '/posts' && method === 'GET') return handleListPosts(env)
+  if (path === '/posts' && method === 'GET') {
+    return handleListPosts(env, new URL(request.url).searchParams.get('lang'))
+  }
   if (path === '/posts' && method === 'POST') return handleCreatePost(request, env)
   if (path.startsWith('/posts/') && method === 'DELETE') {
     return handleDeletePost(request, env, decodeURIComponent(path.slice('/posts/'.length)))

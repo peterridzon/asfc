@@ -7,8 +7,9 @@ import {
   dismissedAlertIds,
   markAlertsSeenThisVisit,
 } from '../lib/alertSettings'
-import { usePosts } from '../lib/usePosts'
 import { disclaimerHandled } from '../lib/disclaimer'
+import { useTranslation } from '../lib/i18n/useTranslation'
+import { usePosts } from '../lib/usePosts'
 import { useWelcomePending } from '../lib/useWelcomePending'
 import { LazyImage } from './LazyImage'
 
@@ -28,7 +29,8 @@ const DISCLAIMER_ROUTES = /^\/(outlook|archive|alerts)/
  */
 export function AlertPopup() {
   const { pathname } = useLocation()
-  const { posts } = usePosts('alerts')
+  const { t, lang } = useTranslation()
+  const { posts } = usePosts('alerts', lang)
   const welcomePending = useWelcomePending()
 
   const [queue, setQueue] = useState<string[] | null>(null)
@@ -93,7 +95,7 @@ export function AlertPopup() {
       <div
         role="dialog"
         aria-modal="true"
-        aria-label="Weather alert"
+        aria-label={t('alertPopup.dialogLabel')}
         className="flex h-[63.2dvh] max-h-[calc(100dvh-2rem)] w-[max(63.2vw,300px)] max-w-[min(1000px,calc(100vw-2rem))] flex-col gap-4 overflow-y-auto bg-white p-5 shadow-2xl sm:p-7"
       >
         <div className="flex min-h-0 flex-1 flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
@@ -121,7 +123,7 @@ export function AlertPopup() {
               onClick={closeAll}
               className="bg-navy px-8 py-3 font-mono text-base font-bold tracking-[0.14em] text-white uppercase transition hover:bg-navy-soft"
             >
-              OK
+              {t('alertPopup.ok')}
             </button>
 
             <button
@@ -129,11 +131,11 @@ export function AlertPopup() {
               onClick={neverAgain}
               className="border border-hairline px-4 py-2.5 font-mono text-xs tracking-[0.1em] text-navy-soft uppercase transition hover:bg-sky-canvas hover:text-navy"
             >
-              Don&rsquo;t show this alert again
+              {t('alertPopup.dontShowThisAlert')}
             </button>
           </div>
 
-          <p className="text-center text-xs text-navy-faint">you can change this in settings.</p>
+          <p className="text-center text-xs text-navy-faint">{t('alertPopup.changeInSettings')}</p>
         </div>
       </div>
     </div>

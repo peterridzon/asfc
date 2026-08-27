@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AlertPopup } from './components/AlertPopup'
+import { useSyncHtmlLang } from './lib/i18n/useTranslation'
 import { Layout } from './components/Layout'
 import { TutorialOnDemand } from './components/TutorialOnDemand'
 import { WelcomeTutorial } from './components/WelcomeTutorial'
@@ -16,6 +17,8 @@ import { Sources } from './pages/Sources'
 import { UpdateLog } from './pages/UpdateLog'
 
 export function App() {
+  useSyncHtmlLang()
+
   return (
     <BrowserRouter>
       {/* First-ever visit only. Disclaimer and alerts wait for this to close. */}

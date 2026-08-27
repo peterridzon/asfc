@@ -1,13 +1,11 @@
+import type { TranslationKey } from './i18n/translations'
 import type { SectionId } from '../types'
 
 export interface SectionDefinition {
   id: SectionId
   path: string
-  /** Text on the homepage button. */
-  label: string
-  /** Heading on the section page. */
-  title: string
-  description: string
+  /** Translation key for the button and nav label. */
+  labelKey: TranslationKey
   /**
    * Tailwind classes for the homepage button. Dark navy text on all three
    * because every colour is bright — white would not have enough contrast.
@@ -21,28 +19,21 @@ export const SECTIONS: SectionDefinition[] = [
   {
     id: 'sources',
     path: '/sources',
-    label: 'SOURCES / ZDROJE',
-    title: 'Sources / Zdroje',
-    description: 'Radar, satellite and model images collected from the sources ASFC follows.',
+    labelKey: 'nav.sources',
     button: 'bg-[rgb(28,255,162)] text-navy hover:bg-[rgb(16,232,143)]',
     accent: 'bg-asfc-green',
   },
   {
     id: 'outlook',
     path: '/outlook',
-    label: 'STORM OUTLOOK',
-    title: 'Storm Outlook',
-    description: 'Experimental amateur storm outlook maps published by ASFC.',
+    labelKey: 'nav.outlook',
     button: 'bg-[rgb(255,208,0)] text-navy hover:bg-[rgb(232,189,0)]',
     accent: 'bg-asfc-yellow',
   },
   {
     id: 'alerts',
     path: '/alerts',
-    label: 'ALERTS / VAROVANIA',
-    title: 'Alerts / Varovania',
-    description:
-      'Images related to severe weather situations. Official warnings are issued by the national meteorological services, not by ASFC.',
+    labelKey: 'nav.alerts',
     button: 'bg-[rgb(255,79,49)] text-navy hover:bg-[rgb(235,64,36)]',
     accent: 'bg-asfc-red',
   },
@@ -50,59 +41,23 @@ export const SECTIONS: SectionDefinition[] = [
 
 /** The regional outlooks reached from the Storm Outlook page. */
 export interface OutlookRegion {
-  /** URL segment: /outlook/<slug> */
-  slug: string
+  /** URL segment: /outlook/<slug>. Also the translation key suffix: country.<slug>. */
+  slug: 'austria' | 'czechia' | 'slovakia' | 'hungary'
   /** Which collection of images it publishes to. */
   section: 'outlook-austria' | 'outlook-czechia' | 'outlook-slovakia' | 'outlook-hungary'
-  /** Country name on its own, e.g. "Slovakia". */
-  country: string
-  /** Text on the button. */
-  label: string
-  /** Heading on the region's own page. */
-  title: string
 }
 
+/** Austria, Czechia, Slovakia, Hungary — the order used everywhere this list appears. */
 export const OUTLOOK_REGIONS: OutlookRegion[] = [
-  {
-    slug: 'austria',
-    section: 'outlook-austria',
-    country: 'Austria',
-    label: 'FORECAST FOR AUSTRIA',
-    title: 'Forecast for Austria',
-  },
-  {
-    slug: 'czechia',
-    section: 'outlook-czechia',
-    country: 'Czechia',
-    label: 'FORECAST FOR CZECHIA',
-    title: 'Forecast for Czechia',
-  },
-  {
-    slug: 'slovakia',
-    section: 'outlook-slovakia',
-    country: 'Slovakia',
-    label: 'FORECAST FOR SLOVAKIA',
-    title: 'Forecast for Slovakia',
-  },
-  {
-    slug: 'hungary',
-    section: 'outlook-hungary',
-    country: 'Hungary',
-    label: 'FORECAST FOR HUNGARY',
-    title: 'Forecast for Hungary',
-  },
+  { slug: 'austria', section: 'outlook-austria' },
+  { slug: 'czechia', section: 'outlook-czechia' },
+  { slug: 'slovakia', section: 'outlook-slovakia' },
+  { slug: 'hungary', section: 'outlook-hungary' },
 ]
 
 export function getOutlookRegion(slug: string): OutlookRegion | undefined {
   return OUTLOOK_REGIONS.find((region) => region.slug === slug)
 }
 
-export function getSection(id: string): SectionDefinition | undefined {
-  return SECTIONS.find((section) => section.id === id)
-}
-
 /** Shown in the top-left corner of the homepage. Bump this when you release. */
 export const VERSION_LABEL = 'current version 1.2.1'
-
-export const DISCLAIMER =
-  'This is for experimental purposes only and this doesn’t replace official weather warnings or forecasts.'
