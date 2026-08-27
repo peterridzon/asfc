@@ -4,12 +4,18 @@
  */
 
 /** Every collection of images the site can publish to. */
-export type Section = 'outlook-austria' | 'outlook-czechia' | 'outlook-slovakia' | 'alerts'
+export type Section =
+  | 'outlook-austria'
+  | 'outlook-czechia'
+  | 'outlook-slovakia'
+  | 'outlook-hungary'
+  | 'alerts'
 
 export const SECTIONS: readonly Section[] = [
   'outlook-austria',
   'outlook-czechia',
   'outlook-slovakia',
+  'outlook-hungary',
   'alerts',
 ]
 

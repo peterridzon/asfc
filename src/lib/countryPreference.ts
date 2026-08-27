@@ -1,9 +1,9 @@
 const KEY = 'asfc.preferredCountry'
 
 /** Slug of an entry in OUTLOOK_REGIONS, or null when nothing is chosen. */
-export type CountrySlug = 'austria' | 'czechia' | 'slovakia'
+export type CountrySlug = 'austria' | 'czechia' | 'slovakia' | 'hungary'
 
-const VALID: CountrySlug[] = ['austria', 'czechia', 'slovakia']
+const VALID: CountrySlug[] = ['austria', 'czechia', 'slovakia', 'hungary']
 
 export function preferredCountry(): CountrySlug | null {
   try {

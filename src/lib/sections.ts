@@ -48,12 +48,12 @@ export const SECTIONS: SectionDefinition[] = [
   },
 ]
 
-/** The two regional outlooks reached from the Storm Outlook page. */
+/** The regional outlooks reached from the Storm Outlook page. */
 export interface OutlookRegion {
   /** URL segment: /outlook/<slug> */
   slug: string
   /** Which collection of images it publishes to. */
-  section: 'outlook-austria' | 'outlook-czechia' | 'outlook-slovakia'
+  section: 'outlook-austria' | 'outlook-czechia' | 'outlook-slovakia' | 'outlook-hungary'
   /** Country name on its own, e.g. "Slovakia". */
   country: string
   /** Text on the button. */
@@ -83,6 +83,13 @@ export const OUTLOOK_REGIONS: OutlookRegion[] = [
     country: 'Slovakia',
     label: 'FORECAST FOR SLOVAKIA',
     title: 'Forecast for Slovakia',
+  },
+  {
+    slug: 'hungary',
+    section: 'outlook-hungary',
+    country: 'Hungary',
+    label: 'FORECAST FOR HUNGARY',
+    title: 'Forecast for Hungary',
   },
 ]
 
