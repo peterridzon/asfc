@@ -25,7 +25,6 @@ const en = {
     'Images related to severe weather situations. Official warnings are issued by the national meteorological services, not by ASFC.',
   'home.settings': 'SETTINGS',
   'home.updateLog': 'UPDATE LOG',
-  'home.outlookArchive': 'OUTLOOK ARCHIVE',
   'home.tutorial': 'TUTORIAL',
   'home.metaDesc': 'ASFC — Amateur Storm Forecast Center.',
 
@@ -121,6 +120,13 @@ const en = {
   'country.czechia': 'Czechia',
   'country.slovakia': 'Slovakia',
   'country.hungary': 'Hungary',
+  'home.archive': 'ARCHIVE',
+  'archive.rootTitle': 'Archive',
+  'archive.rootMetaDesc': "Browse ASFC's alert and storm outlook archives.",
+  'archive.alertsArchive': 'Alerts Archive',
+  'archive.alertsArchiveMetaDesc': 'Previously published ASFC alert images.',
+  'archive.alertsArchiveEmptyHint': 'No archived alerts yet.',
+  'language.german': 'German',
 } satisfies Record<string, string>
 
 export type TranslationKey = keyof typeof en
@@ -141,7 +147,6 @@ const de: Record<TranslationKey, string> = {
     'Bilder zu schweren Wettersituationen. Offizielle Warnungen werden von den nationalen Wetterdiensten herausgegeben, nicht von ASFC.',
   'home.settings': 'EINSTELLUNGEN',
   'home.updateLog': 'AKTUALISIERUNGEN',
-  'home.outlookArchive': 'AUSBLICK-ARCHIV',
   'home.tutorial': 'ANLEITUNG',
   'home.metaDesc': 'ASFC — Amateur-Sturmvorhersagezentrum.',
 
@@ -238,6 +243,13 @@ const de: Record<TranslationKey, string> = {
   'country.czechia': 'Tschechien',
   'country.slovakia': 'Slowakei',
   'country.hungary': 'Ungarn',
+  'home.archive': 'ARCHIV',
+  'archive.rootTitle': 'Archiv',
+  'archive.rootMetaDesc': 'Durchsuchen Sie die Warnungs- und Sturmausblick-Archive von ASFC.',
+  'archive.alertsArchive': 'Warnungsarchiv',
+  'archive.alertsArchiveMetaDesc': 'Zuvor veröffentlichte ASFC-Warnbilder.',
+  'archive.alertsArchiveEmptyHint': 'Es gibt noch keine archivierten Warnungen.',
+  'language.german': 'Deutsch',
 }
 
 const cs: Record<TranslationKey, string> = {
@@ -256,7 +268,6 @@ const cs: Record<TranslationKey, string> = {
     'Obrázky týkající se nebezpečných povětrnostních situací. Oficiální varování vydávají národní meteorologické služby, nikoli ASFC.',
   'home.settings': 'NASTAVENÍ',
   'home.updateLog': 'SEZNAM AKTUALIZACÍ',
-  'home.outlookArchive': 'ARCHIV VÝHLEDŮ',
   'home.tutorial': 'NÁVOD',
   'home.metaDesc': 'ASFC — Amatérské centrum pro předpověď bouří.',
 
@@ -352,6 +363,13 @@ const cs: Record<TranslationKey, string> = {
   'country.czechia': 'Česko',
   'country.slovakia': 'Slovensko',
   'country.hungary': 'Maďarsko',
+  'home.archive': 'ARCHIV',
+  'archive.rootTitle': 'Archiv',
+  'archive.rootMetaDesc': 'Procházejte archivy varování a výhledů bouřek ASFC.',
+  'archive.alertsArchive': 'Archiv varování',
+  'archive.alertsArchiveMetaDesc': 'Dříve zveřejněné obrázky varování ASFC.',
+  'archive.alertsArchiveEmptyHint': 'Zatím nejsou žádná archivovaná varování.',
+  'language.german': 'Němčina',
 }
 
 const sk: Record<TranslationKey, string> = {
@@ -370,7 +388,6 @@ const sk: Record<TranslationKey, string> = {
     'Obrázky týkajúce sa nebezpečných poveternostných situácií. Oficiálne výstrahy vydávajú národné meteorologické služby, nie ASFC.',
   'home.settings': 'NASTAVENIA',
   'home.updateLog': 'ZOZNAM AKTUALIZÁCIÍ',
-  'home.outlookArchive': 'ARCHÍV VÝHĽADOV',
   'home.tutorial': 'NÁVOD',
   'home.metaDesc': 'ASFC — Amatérske centrum pre predpoveď búrok.',
 
@@ -466,6 +483,13 @@ const sk: Record<TranslationKey, string> = {
   'country.czechia': 'Česko',
   'country.slovakia': 'Slovensko',
   'country.hungary': 'Maďarsko',
+  'home.archive': 'ARCHÍV',
+  'archive.rootTitle': 'Archív',
+  'archive.rootMetaDesc': 'Prehliadajte archívy varovaní a výhľadov búrok ASFC.',
+  'archive.alertsArchive': 'Archív varovaní',
+  'archive.alertsArchiveMetaDesc': 'Predtým zverejnené obrázky varovaní ASFC.',
+  'archive.alertsArchiveEmptyHint': 'Zatiaľ nie sú žiadne archivované varovania.',
+  'language.german': 'Nemčina',
 }
 
 const hu: Record<TranslationKey, string> = {
@@ -484,7 +508,6 @@ const hu: Record<TranslationKey, string> = {
     'Súlyos időjárási helyzetekkel kapcsolatos képek. A hivatalos figyelmeztetéseket a nemzeti meteorológiai szolgálatok adják ki, nem az ASFC.',
   'home.settings': 'BEÁLLÍTÁSOK',
   'home.updateLog': 'FRISSÍTÉSI NAPLÓ',
-  'home.outlookArchive': 'KILÁTÁS-ARCHÍVUM',
   'home.tutorial': 'ÚTMUTATÓ',
   'home.metaDesc': 'ASFC — Amatőr Viharelőrejelző Központ.',
 
@@ -580,6 +603,13 @@ const hu: Record<TranslationKey, string> = {
   'country.czechia': 'Csehország',
   'country.slovakia': 'Szlovákia',
   'country.hungary': 'Magyarország',
+  'home.archive': 'ARCHÍVUM',
+  'archive.rootTitle': 'Archívum',
+  'archive.rootMetaDesc': 'Böngéssze az ASFC figyelmeztetés- és viharkilátás-archívumait.',
+  'archive.alertsArchive': 'Figyelmeztetés-archívum',
+  'archive.alertsArchiveMetaDesc': 'Az ASFC korábban közzétett figyelmeztető képei.',
+  'archive.alertsArchiveEmptyHint': 'Még nincsenek archivált figyelmeztetések.',
+  'language.german': 'Német',
 }
 
 export const translations: Record<LanguageCode, Record<TranslationKey, string>> = {

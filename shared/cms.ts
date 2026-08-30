@@ -28,6 +28,13 @@ export interface Post {
   text: string
   /** ISO timestamp; the list is kept newest-first. */
   createdAt: string
+  /**
+   * Alerts only, set manually from /admin. A archived alert moves from
+   * /alerts to /archive/alerts instead of disappearing or staying live
+   * forever. Outlook posts ignore this — their archive is automatic
+   * (newest first), so this is always undefined for them.
+   */
+  archived?: boolean
 }
 
 /** Minimal shape of a Cloudflare KV binding — avoids a types dependency. */

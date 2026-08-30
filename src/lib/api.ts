@@ -53,6 +53,23 @@ export async function createPost(form: FormData): Promise<Post> {
   return body.post
 }
 
+export interface PostEdits {
+  alt?: string
+  text?: string
+  archived?: boolean
+}
+
+export async function updatePost(id: string, edits: PostEdits): Promise<Post> {
+  const response = await fetch(`/api/posts/${encodeURIComponent(id)}`, {
+    method: 'PATCH',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(edits),
+  })
+  if (!response.ok) throw new Error(await readError(response, 'Could not save.'))
+  const body = (await response.json()) as { post: Post }
+  return body.post
+}
+
 export async function deletePost(id: string): Promise<void> {
   const response = await fetch(`/api/posts/${encodeURIComponent(id)}`, { method: 'DELETE' })
   if (!response.ok) throw new Error(await readError(response, 'Could not delete.'))

@@ -21,7 +21,7 @@ const WIDE_BUTTONS: Array<{
   mobileOnly?: boolean
 }> = [
   { key: 'update-log', to: '/update-log', labelKey: 'home.updateLog' },
-  { key: 'archive', to: '/archive', labelKey: 'home.outlookArchive' },
+  { key: 'archive', to: '/archive', labelKey: 'home.archive' },
   { key: 'tutorial', onClick: openTutorial, labelKey: 'home.tutorial', mobileOnly: true },
 ]
 

@@ -199,6 +199,50 @@ export async function handleCreatePost(request: Request, env: CmsEnv): Promise<R
   return json({ ok: true, post })
 }
 
+export async function handleUpdatePost(
+  request: Request,
+  env: CmsEnv,
+  id: string,
+): Promise<Response> {
+  const unauthorised = await requireAuth(request, env)
+  if (unauthorised) return unauthorised
+
+  const kv = requireKv(env)
+  if (kv instanceof Response) return kv
+
+  let body: { alt?: unknown; text?: unknown; archived?: unknown }
+  try {
+    body = (await request.json()) as typeof body
+  } catch {
+    return json({ error: 'Bad request.' }, 400)
+  }
+
+  const posts = await readPosts(kv)
+  const index = posts.findIndex((post) => post.id === id)
+  if (index === -1) return json({ error: 'No such post.' }, 404)
+
+  const current = posts[index]
+  const updated: Post = {
+    ...current,
+    alt: typeof body.alt === 'string' ? body.alt.trim() : current.alt,
+    text: typeof body.text === 'string' ? body.text.trim() : current.text,
+    archived: typeof body.archived === 'boolean' ? body.archived : current.archived,
+  }
+  posts[index] = updated
+  await writePosts(kv, posts)
+
+  // Cached translations were computed from the old text. Posts up to now were
+  // never edited after publishing, which is what made caching them forever
+  // safe — an edit breaks that assumption, so the affected cache entries are
+  // dropped and will simply regenerate from the new text next time they're
+  // requested in each language.
+  await Promise.all(
+    Object.keys(AI_TARGET_LANG).map((lang) => kv.delete(translationKey(id, lang))),
+  )
+
+  return json({ ok: true, post: updated })
+}
+
 export async function handleDeletePost(
   request: Request,
   env: CmsEnv,
@@ -260,6 +304,9 @@ export async function routeCmsRequest(
     return handleListPosts(env, new URL(request.url).searchParams.get('lang'))
   }
   if (path === '/posts' && method === 'POST') return handleCreatePost(request, env)
+  if (path.startsWith('/posts/') && method === 'PATCH') {
+    return handleUpdatePost(request, env, decodeURIComponent(path.slice('/posts/'.length)))
+  }
   if (path.startsWith('/posts/') && method === 'DELETE') {
     return handleDeletePost(request, env, decodeURIComponent(path.slice('/posts/'.length)))
   }

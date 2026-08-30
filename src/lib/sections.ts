@@ -60,4 +60,4 @@ export function getOutlookRegion(slug: string): OutlookRegion | undefined {
 }
 
 /** Shown in the top-left corner of the homepage. Bump this when you release. */
-export const VERSION_LABEL = 'current version 1.4.2'
+export const VERSION_LABEL = 'current version 1.5.5'

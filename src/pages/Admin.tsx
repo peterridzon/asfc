@@ -6,6 +6,7 @@ import {
   fetchSession,
   login,
   logout,
+  updatePost,
   type Post,
   type Section,
 } from '../lib/api'
@@ -113,6 +114,7 @@ function Publisher({ onSignedOut }: { onSignedOut: () => void }) {
   const formRef = useRef<HTMLFormElement>(null)
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null)
+  const [editingId, setEditingId] = useState<string | null>(null)
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -145,6 +147,25 @@ function Publisher({ onSignedOut }: { onSignedOut: () => void }) {
     if (!window.confirm(`Delete this image from ${post.section}?`)) return
     try {
       await deletePost(post.id)
+      reload()
+    } catch (cause) {
+      setMessage({ ok: false, text: (cause as Error).message })
+    }
+  }
+
+  async function handleToggleArchived(post: Post) {
+    try {
+      await updatePost(post.id, { archived: !post.archived })
+      reload()
+    } catch (cause) {
+      setMessage({ ok: false, text: (cause as Error).message })
+    }
+  }
+
+  async function handleSaveEdit(post: Post, alt: string, text: string) {
+    try {
+      await updatePost(post.id, { alt, text })
+      setEditingId(null)
       reload()
     } catch (cause) {
       setMessage({ ok: false, text: (cause as Error).message })
@@ -226,26 +247,110 @@ function Publisher({ onSignedOut }: { onSignedOut: () => void }) {
         <p className="mt-4 text-sm text-navy-soft">Nothing published yet.</p>
       ) : (
         <ul className="mt-4 space-y-3">
-          {posts.map((post) => (
-            <li key={post.id} className="flex items-center gap-4 border border-hairline p-3">
-              <LazyImage src={post.image} alt={post.alt} className="h-20 w-28 shrink-0" />
-              <div className="min-w-0 flex-1">
-                <p className="font-mono text-[11px] tracking-[0.12em] text-navy-faint uppercase">
-                  {post.section} · {new Date(post.createdAt).toLocaleString()}
-                </p>
-                <p className="truncate text-sm text-navy">{post.alt || post.text || '(no text)'}</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => handleDelete(post)}
-                className="shrink-0 border border-hairline px-3 py-2 font-mono text-[11px] tracking-[0.12em] text-navy-soft uppercase transition hover:border-[rgb(196,26,26)] hover:text-[rgb(196,26,26)]"
-              >
-                Delete
-              </button>
-            </li>
-          ))}
+          {posts.map((post) =>
+            editingId === post.id ? (
+              <EditRow
+                key={post.id}
+                post={post}
+                onCancel={() => setEditingId(null)}
+                onSave={(alt, text) => handleSaveEdit(post, alt, text)}
+              />
+            ) : (
+              <li key={post.id} className="flex items-center gap-4 border border-hairline p-3">
+                <LazyImage src={post.image} alt={post.alt} className="h-20 w-28 shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <p className="font-mono text-[11px] tracking-[0.12em] text-navy-faint uppercase">
+                    {post.section} · {new Date(post.createdAt).toLocaleString()}
+                    {post.archived && ' · archived'}
+                  </p>
+                  <p className="truncate text-sm text-navy">{post.alt || post.text || '(no text)'}</p>
+                </div>
+                <div className="flex shrink-0 flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setEditingId(post.id)}
+                    className="border border-hairline px-3 py-2 font-mono text-[11px] tracking-[0.12em] text-navy-soft uppercase transition hover:border-navy hover:text-navy"
+                  >
+                    Edit
+                  </button>
+                  {post.section === 'alerts' && (
+                    <button
+                      type="button"
+                      onClick={() => handleToggleArchived(post)}
+                      className="border border-hairline px-3 py-2 font-mono text-[11px] tracking-[0.12em] text-navy-soft uppercase transition hover:border-navy hover:text-navy"
+                    >
+                      {post.archived ? 'Unarchive' : 'Archive'}
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(post)}
+                    className="border border-hairline px-3 py-2 font-mono text-[11px] tracking-[0.12em] text-navy-soft uppercase transition hover:border-[rgb(196,26,26)] hover:text-[rgb(196,26,26)]"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </li>
+            ),
+          )}
         </ul>
       )}
     </Shell>
+  )
+}
+
+/** Replaces a post's read-only row with editable alt/text fields while active. */
+function EditRow({
+  post,
+  onCancel,
+  onSave,
+}: {
+  post: Post
+  onCancel: () => void
+  onSave: (alt: string, text: string) => void
+}) {
+  const [alt, setAlt] = useState(post.alt)
+  const [text, setText] = useState(post.text)
+
+  return (
+    <li className="space-y-3 border border-navy p-3">
+      <p className="font-mono text-[11px] tracking-[0.12em] text-navy-faint uppercase">
+        Editing · {post.section}
+      </p>
+      <label className="block">
+        <span className="label-tech">Alt text</span>
+        <input
+          type="text"
+          value={alt}
+          onChange={(event) => setAlt(event.target.value)}
+          className={`mt-1 ${field}`}
+        />
+      </label>
+      <label className="block">
+        <span className="label-tech">Text under the image</span>
+        <textarea
+          value={text}
+          onChange={(event) => setText(event.target.value)}
+          rows={4}
+          className={`mt-1 ${field}`}
+        />
+      </label>
+      <div className="flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={() => onSave(alt, text)}
+          className="bg-navy px-4 py-2 font-mono text-[11px] tracking-[0.12em] text-white uppercase transition hover:bg-navy-soft"
+        >
+          Save
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="border border-hairline px-4 py-2 font-mono text-[11px] tracking-[0.12em] text-navy-soft uppercase transition hover:border-navy hover:text-navy"
+        >
+          Cancel
+        </button>
+      </div>
+    </li>
   )
 }

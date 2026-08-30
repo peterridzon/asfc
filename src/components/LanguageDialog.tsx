@@ -1,6 +1,5 @@
 import { LANGUAGES } from '../lib/i18n/languages'
 import { setLanguage } from '../lib/i18n/store'
-import { countryTranslationKey } from '../lib/i18n/translations'
 import { useTranslation } from '../lib/i18n/useTranslation'
 import { Modal } from './Modal'
 
@@ -9,7 +8,7 @@ const option =
 const secondary =
   'border border-hairline px-5 py-3 font-mono text-xs tracking-[0.1em] text-navy-soft uppercase transition hover:bg-sky-canvas hover:text-navy'
 
-/** Translates the whole site: the country options already used elsewhere, plus Default (English). */
+/** Translates the whole site: German, Czech, Slovak, Hungarian, plus Default (English). */
 export function LanguageDialog({ onClose }: { onClose: () => void }) {
   const { t } = useTranslation()
 
@@ -29,7 +28,7 @@ export function LanguageDialog({ onClose }: { onClose: () => void }) {
               onClick={() => choose(language.code)}
               className={option}
             >
-              {language.countrySlug ? t(countryTranslationKey(language.countrySlug)) : t('language.default')}
+              {t(language.labelKey)}
             </button>
           ))}
         </div>

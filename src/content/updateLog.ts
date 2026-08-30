@@ -13,6 +13,7 @@ import type { UpdateLogEntry } from '../types'
  * ============================================================================
  */
 export const updateLog: UpdateLogEntry[] = [
+  { id: '1.5', text: 'version 1.5 - alerts archive' },
   { id: '1.4.2', text: 'version 1.4.2 - translation fixes' },
   { id: '1.4', text: 'version 1.4 - added language switcher' },
   { id: '1.3', text: 'version 1.3 - added hungary' },

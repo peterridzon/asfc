@@ -4,22 +4,21 @@ import { useTranslation } from '../lib/i18n/useTranslation'
 import { usePosts } from '../lib/usePosts'
 import { useDocumentMeta } from '../lib/useDocumentMeta'
 
-/** Alerts images, one per screenful, each with its text printed underneath. */
-export function Alerts() {
+/** Alerts manually archived from /admin — everything else stays on /alerts. */
+export function AlertsArchive() {
   const { t, lang } = useTranslation()
-  useDocumentMeta(t('alerts.title'), t('alerts.metaDesc'))
+  useDocumentMeta(t('archive.alertsArchive'), t('archive.alertsArchiveMetaDesc'))
   const { posts, loading, error } = usePosts('alerts', lang)
-  // Manually archived alerts move to /archive/alerts instead of disappearing.
-  const visible = posts.filter((post) => !post.archived)
+  const archived = posts.filter((post) => post.archived)
 
   return (
     <>
       <DisclaimerDialog />
       <FullScreenImages
-        posts={visible}
+        posts={archived}
         loading={loading}
         error={error}
-        emptyHint={t('alerts.emptyHint')}
+        emptyHint={t('archive.alertsArchiveEmptyHint')}
       />
     </>
   )
